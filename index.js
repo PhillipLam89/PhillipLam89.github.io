@@ -82,7 +82,7 @@ function updateBtnHandler() {
         alert('fill out form')
         return
     }
-    const id = lastTaskClickedOn
+    let id = lastTaskClickedOn
     let startHour = timeInput.value.slice(0, timeInput.value.indexOf(':'))
 
     const startMinutes = timeInput.value.slice(timeInput.value.indexOf(':')+1)
