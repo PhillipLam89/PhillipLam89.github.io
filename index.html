@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="styles.css"/>
+    <title>Scheduler</title>
+  </head>
+  <body>
+     <section id="headers">
+      <h1 >Phillip's Schedule</h1>
+      <h3 id="currentDayNameHTML"></h3>
+      <h3 id="currentDateHTML"></h3>
+
+     </section>
+
+      <section id="bigDaddyWrapper">
+        <section id="tasksWrapper-0">
+          <div>
+            <h2>Time:</h2>
+             <p id="startHour-0">3:<span id="startMinutes-0">04</span><span id="AMPM"> PM</span>
+            </p>
+          </div>
+          <div><h2>Goal:</h2>
+               <p id="goalTextHTML-0">study for finals</p></div>
+          <div><h2>Done?</h2></div>
+          <div class="editBtn" id="editBtnDiv-0">
+            <button id="editBtn-0">Edit/Add</button>
+          </div>
+        </section>
+       
+        <br>
+        
+        <section id="tasksWrapper-1">
+          <div>
+            <h2>Time:</h2>
+             <p id="startHour-1">12:<span id="startMinutes-1">34</span><span id="AMPM"> PM</span>
+            </p>
+          </div>
+          <div><h2>Goal:</h2>
+          <p id="goalTextHTML-1">RAILLLLL</p></div></div>
+          <div><h2>Done?</h2></div>
+          <div class="editBtn" id="editBtnDiv-1">
+            <button id="editBtn-1">Edit/Add</button>
+          </div>
+        </section>
+        
+      </section>
+
+      <section id="modalWrapper-0" class="modal hidden">
+        <div class="flex">
+         
+          <button class="btn-close">⨉</button>
+        </div>
+
+        <div id="taskParentWrapper">
+          <p>Current Time: <span id="oldTaskTime"></span></p>
+          <label for="timeInput">set new time</label>
+           <input id="timeInput" type="time">
+           <br>
+           <label id="currentGoal">Goal:</label>
+           <input id="currentGoalInput">
+           <br>
+           <br>
+           <label for="newPostOption">Add as new post</label> 
+           <input type="checkbox" id="newPostOption">
+        </div>
+       
+
+      
+        <button id="updateBtn" class="btn">Update!</button>
+      </section>
+      
+      <div class="overlay hidden"></div>
+
+      <script src="./modal.js"></script>
+      <script src="./index.js"></script>
+  </body>
+</html>
