@@ -35,8 +35,9 @@ function UpdateRenderTasks() {
             </p>
           </div>
           <div><h2>Goal:</h2>
-               <p id="goalTextHTML-${task.index}">${task.Goal}</p></div>
-          <div><h2>Done?</h2></div>
+               <p id="goalTextHTML-${task.index}">${task.Goal}</p>
+          <h2>Done?</h2>
+        </div>
           <div class="editBtn" id="editBtnDiv-${task.index}">
             <button id="editBtn-${task.index}">Edit/Add</button>
           </div>
