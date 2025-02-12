@@ -91,15 +91,12 @@ function updateBtnHandler() {
     newObj.startHour = startHour
     newObj.startMinutes = startMinutes
     newObj.Goal = currentGoalInput.value
+    
+    id = !newPostOption.checked ? id : allTasks.length
 
-    if (!newPostOption.checked) {
-        allTasks[id] = newObj
-        handleAMPM(id)
-
-    } else {
-        allTasks.push(newObj)
-        handleAMPM(allTasks.length - 1)
-    }
+    allTasks[id] = newObj
+    handleAMPM(id)
+    
 
         closeModal()
         UpdateRenderTasks()
