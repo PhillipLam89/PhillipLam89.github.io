@@ -34,10 +34,14 @@ function UpdateRenderTasks() {
              <p id="startHour-${task.index}">${task.startHour}:<span id="startMinutes-${task.index}">${task.startMinutes}</span><span id="AMPM"> ${task.isPM ? 'PM' : 'AM'}</span>
             </p>
           </div>
-          <div><h2>Goal:</h2>
-               <p id="goalTextHTML-${task.index}">${task.Goal}</p>
-          <h2>Done?</h2>
-        </div>
+          <div>
+            <h2>Goal:</h2>
+            <p id="goalTextHTML-${task.index}">${task.Goal}</p>
+         
+          </div>
+          <div>
+            <h2>Done?</h2>
+          </div>
           <div class="editBtn" id="editBtnDiv-${task.index}">
             <button id="editBtn-${task.index}">Edit/Add</button>
           </div>
