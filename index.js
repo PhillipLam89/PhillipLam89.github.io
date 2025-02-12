@@ -86,21 +86,19 @@ function updateBtnHandler() {
     let startHour = timeInput.value.slice(0, timeInput.value.indexOf(':'))
 
     const startMinutes = timeInput.value.slice(timeInput.value.indexOf(':')+1)
+
+    const newObj = {}
+    newObj.startHour = startHour
+    newObj.startMinutes = startMinutes
+    newObj.Goal = currentGoalInput.value
+
     if (!newPostOption.checked) {
-       
-        allTasks[id].startHour = startHour
-        allTasks[id].startMinutes = startMinutes
-        allTasks[id].Goal = currentGoalInput.value
+        allTasks[id] = newObj
         handleAMPM(id)
 
     } else {
-        const isPM = startHour >= 12 ? true : false
-        startHour = startHour > 12 ? startHour - 12 : startHour
-
-        if (startHour == 0) startHour = 12
-        
-        allTasks.push({startHour,startMinutes,isPM,index: allTasks.length + 1, Goal: currentGoalInput.value})
-      
+        allTasks.push(newObj)
+        handleAMPM(allTasks.length - 1)
     }
 
         closeModal()
@@ -108,7 +106,10 @@ function updateBtnHandler() {
 } 
 
 function handleAMPM(id) {
-    if (allTasks[id].startHour == 0) allTasks[id].startHour = 12
+    if (allTasks[id].startHour == 0) {
+        allTasks[id].startHour = 12
+        allTasks[id].isPM = false
+    }
     if (allTasks[id].startHour > 12) {
         allTasks[id].isPM = true
         allTasks[id].startHour -= 12
