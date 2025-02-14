@@ -125,3 +125,9 @@
     right: 0;
 
   }
+
+.countdownTimer {
+  color: red;
+  font-weight: bolder;
+  font-size: 18px;
+}
