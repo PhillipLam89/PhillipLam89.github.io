@@ -7,17 +7,18 @@ const daysOfWeekSuffixes = {
 }
 
 let allTasks = [
-    {startHour: '3', startMinutes: '04', Goal: 'DEFAULT 1', Done:false, index:0,
-                   isPM: false
+    {startHour: '3', startMinutes: '04', Goal: 'ERROR, SAMPLE GOAL 1', Done:false, index:0,
+                   isPM: false, trueValue: 3*60 + 4
     },
-    {startHour: '11',startMinutes:'30', Goal: 'DFDSFDS ', Done:false, index:1, isPM: true,
-    
+    {startHour: '11',startMinutes:'30', Goal: 'ERROR, SAMPLE GOAL 2', Done:false, index:1, isPM: true,
+                    trueValue: 23*60 + 20
     },
-    {startHour: '3',startMinutes:'10', Goal: 'play doooom ', Done:false, index:2, isPM: true,
+    {startHour: '3',startMinutes:'10', Goal:  'ERROR, SAMPLE GOAL 3', Done:false, index:2, isPM: true,
+                    trueValue: 15*60 + 10
     
     }    
 ]
-allTasks.forEach((task,i) => handleAMPM(i))
+
 
 let lastTaskClickedOn = null
 function UpdateRenderTasks() {
@@ -75,8 +76,6 @@ onload = function getCurrentDate() { //loads current date
         currentDayNameHTML.textContent =`${dayName}`
         currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
 
-    
-
     UpdateRenderTasks()
     updateBtn.onclick  = updateBtnHandler
 }
@@ -94,7 +93,7 @@ function updateBtnHandler() {
    
     const newObj = {}
     newObj.startHour = ~~startHour
-    newObj.startMinutes = ~~startMinutes
+    newObj.startMinutes = startMinutes
     newObj.Goal = currentGoalInput.value
     
     id = !newPostOption.checked ? id : allTasks.length
@@ -120,7 +119,7 @@ function handleAMPM(id) {
     }
      if (task.startHour > 12) {
         task.isPM = true
-        task.trueValue = (task.startHour * 60) + task.startMinutes
+        task.trueValue = (task.startHour * 60) + ~~task.startMinutes
         task.startHour -= 12
         console.log(task.trueValue)
         return
@@ -128,14 +127,14 @@ function handleAMPM(id) {
     }
     if (task.startHour == 12) {
         task.isPM = true
-        task.trueValue = (task.startHour * 60) + task.startMinutes
+        task.trueValue = (task.startHour * 60) + ~~task.startMinutes
         task.isPM = true
         return
     }
      else {
         task.isPM = false
         console.log(task.startHour)
-        task.trueValue = (task.startHour * 60) + task.startMinutes
+        task.trueValue = (task.startHour * 60) + ~~task.startMinutes
       
     }
 }
