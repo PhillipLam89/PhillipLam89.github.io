@@ -15,7 +15,7 @@
     color: #222;
     position: relative;
     min-height: 100dvh;
-    background-color: chocolate;
+    background-color: deepskyblue;
   }
   
   .modal {
@@ -115,7 +115,7 @@
     position: relative;
     justify-content: space-between;
     padding: 1%;
-    border: 3px solid blue;
+    border: 3px solid purple;
     border-radius: 5px;
     margin: 1%;
 }
