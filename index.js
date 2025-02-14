@@ -1,7 +1,8 @@
 const daysOfWeekSuffixes = {
     MonFriSun: 'day',
     Wed: 'nesday',
-    TueThu: 'sday',
+    Tue: 'sday',
+    Thu: 'rsday',
     Sat: 'urday'
 }
 
@@ -16,13 +17,12 @@ let allTasks = [
     
     }    
 ]
+allTasks.forEach((task,i) => handleAMPM(i))
 
 let lastTaskClickedOn = null
 function UpdateRenderTasks() {
-    let arr = [...allTasks.filter(task => !task.isPM).sort((a,b) => a.startHour - b.startHour)]
-        arr.push(...allTasks.filter(task => task.isPM).sort((a,b) => a.startHour - b.startHour))
 
-    allTasks = arr
+    allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
     allTasks.forEach((task,i) => task.index = i)
     let format = ``
 
@@ -91,31 +91,53 @@ function updateBtnHandler() {
     let startHour = timeInput.value.slice(0, timeInput.value.indexOf(':'))
 
     const startMinutes = timeInput.value.slice(timeInput.value.indexOf(':')+1)
-
+   
     const newObj = {}
-    newObj.startHour = startHour
-    newObj.startMinutes = startMinutes
+    newObj.startHour = ~~startHour
+    newObj.startMinutes = ~~startMinutes
     newObj.Goal = currentGoalInput.value
     
     id = !newPostOption.checked ? id : allTasks.length
 
     allTasks[id] = newObj
+   
     handleAMPM(id)
     
 
-        closeModal()
-        UpdateRenderTasks()
+    closeModal()
+    UpdateRenderTasks()
 } 
 
 function handleAMPM(id) {
-    if (allTasks[id].startHour == 0) {
-        allTasks[id].startHour = 12
-        allTasks[id].isPM = false
+    const task = allTasks[id]
+    if (task.startHour == 0) {
+        task.startHour = 12
+        task.isPM = false
+        task.trueValue = 0 + task.startMinutes
+        
+        console.log(task.trueValue)
+       return
     }
-    if (allTasks[id].startHour > 12) {
-        allTasks[id].isPM = true
-        allTasks[id].startHour -= 12
-    }else allTasks[id].isPM = false
+     if (task.startHour > 12) {
+        task.isPM = true
+        task.trueValue = (task.startHour * 60) + task.startMinutes
+        task.startHour -= 12
+        console.log(task.trueValue)
+        return
+        
+    }
+    if (task.startHour == 12) {
+        task.isPM = true
+        task.trueValue = (task.startHour * 60) + task.startMinutes
+        task.isPM = true
+        return
+    }
+     else {
+        task.isPM = false
+        console.log(task.startHour)
+        task.trueValue = (task.startHour * 60) + task.startMinutes
+      
+    }
 }
 
 function addEditListeners() {
