@@ -84,7 +84,8 @@ function UpdateRenderTasks() {
          
           </div>
           <div>
-            <h2>Done?</h2>
+            <h5>Countdown</h5>
+            <p class="countdownTimer" id="task-${task.index}-countdown">5:01</p>
           </div>
           <div class="editBtn" id="editBtnDiv-${task.index}">
             <button id="editBtn-${task.index}">Edit/Add</button>
