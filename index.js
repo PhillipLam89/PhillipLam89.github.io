@@ -1,6 +1,8 @@
 let secondsPassedInDay = 0
 window.onload = function runOnBoot() { //loads current date
-
+    allTasks.forEach(task => {
+        task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
+    })
     const date = new Date()
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
@@ -22,13 +24,22 @@ window.onload = function runOnBoot() { //loads current date
         let exactTime = date.toLocaleString([], {
             hour: "2-digit",
             minute: "2-digit",
-            second: "2-digit"
+            second: "2-digit",
+            
       });
       let [hrs,mins,secs] = exactTime.split(':')
             secs = secs.slice(0, secs.indexOf(' '))
 
+
       secondsPassedInDay = (hrs * 60**2) + (mins * 60) + (secs * 1)
       currentTimeHTML.textContent = `${exactTime}`
+
+
+
+     //update seconds passed for all tasks
+     allTasks.forEach(task => {
+        task.alertTimer--
+    }) 
     }
 
                              
@@ -61,6 +72,8 @@ let allTasks = [
     
     }    
 ]
+
+console.log(allTasks)
 let lastTaskClickedOn = null
 
 
