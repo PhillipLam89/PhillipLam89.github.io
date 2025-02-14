@@ -1,3 +1,46 @@
+let secondsPassedInDay = 0
+window.onload = function runOnBoot() { //loads current date
+
+    const date = new Date()
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const dayNumber = String(date.getDate()).padStart(2, '0');
+    
+    let dayName = new Date()
+        dayName = String(dayName)
+        dayName = dayName.slice(0, dayName.indexOf(' '))
+        
+        const dayIndex = Object.keys(daysOfWeekSuffixes)
+                        .find(day => day.includes(dayName))
+ 
+        dayName += daysOfWeekSuffixes[dayIndex]
+
+    
+    
+    function updateTime() {
+        const date = new Date()
+        let exactTime = date.toLocaleString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+      });
+      let [hrs,mins,secs] = exactTime.split(':')
+            secs = secs.slice(0, secs.indexOf(' '))
+
+      secondsPassedInDay = (hrs * 60**2) + (mins * 60) + (secs * 1)
+      currentTimeHTML.textContent = `${exactTime}`
+    }
+
+                             
+        currentDayNameHTML.textContent =`${dayName}`
+        currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
+        updateTime()
+
+    UpdateRenderTasks()
+    updateBtn.onclick  = updateBtnHandler
+    this.setInterval(updateTime, 999)
+}
+
 const daysOfWeekSuffixes = {
     MonFriSun: 'day',
     Wed: 'nesday',
@@ -18,9 +61,9 @@ let allTasks = [
     
     }    
 ]
-
-
 let lastTaskClickedOn = null
+
+
 function UpdateRenderTasks() {
 
     allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
@@ -58,27 +101,6 @@ function UpdateRenderTasks() {
 
 
 
-onload = function getCurrentDate() { //loads current date
-    const date = new Date()
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-    const dayNumber = String(date.getDate()).padStart(2, '0');
-    
-    let dayName = new Date()
-        dayName = String(dayName)
-        dayName = dayName.slice(0, dayName.indexOf(' '))
-        
-        const dayIndex = Object.keys(daysOfWeekSuffixes)
-                        .find(day => day.includes(dayName))
- 
-        dayName += daysOfWeekSuffixes[dayIndex]
-                             
-        currentDayNameHTML.textContent =`${dayName}`
-        currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
-
-    UpdateRenderTasks()
-    updateBtn.onclick  = updateBtnHandler
-}
 
 
 function updateBtnHandler() {
