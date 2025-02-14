@@ -11,7 +11,7 @@ let allTasks = [
                    isPM: false, trueValue: 3*60 + 4
     },
     {startHour: '11',startMinutes:'30', Goal: 'ERROR, SAMPLE GOAL 2', Done:false, index:1, isPM: true,
-                    trueValue: 23*60 + 20
+                    trueValue: 23*60 + 30
     },
     {startHour: '3',startMinutes:'10', Goal:  'ERROR, SAMPLE GOAL 3', Done:false, index:2, isPM: true,
                     trueValue: 15*60 + 10
@@ -92,7 +92,7 @@ function updateBtnHandler() {
     const startMinutes = timeInput.value.slice(timeInput.value.indexOf(':')+1)
    
     const newObj = {}
-    newObj.startHour = ~~startHour
+    newObj.startHour = startHour
     newObj.startMinutes = startMinutes
     newObj.Goal = currentGoalInput.value
     
@@ -113,30 +113,16 @@ function handleAMPM(id) {
         task.startHour = 12
         task.isPM = false
         task.trueValue = 0 + task.startMinutes
-        
-        console.log(task.trueValue)
        return
     }
-     if (task.startHour > 12) {
+    if (task.startHour >= 12) {
         task.isPM = true
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
-        task.startHour -= 12
-        console.log(task.trueValue)
-        return
-        
-    }
-    if (task.startHour == 12) {
-        task.isPM = true
+        task.startHour = task.startHour == 12 ? 12 : task.startHour - 12
+    } else {
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
-        task.isPM = true
-        return
     }
-     else {
-        task.isPM = false
-        console.log(task.startHour)
-        task.trueValue = (task.startHour * 60) + ~~task.startMinutes
-      
-    }
+
 }
 
 function addEditListeners() {
