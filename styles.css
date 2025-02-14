@@ -15,7 +15,7 @@
     color: #222;
     position: relative;
     min-height: 100dvh;
-    background-color: chartreuse;
+    background-color: chocolate;
   }
   
   .modal {
@@ -116,6 +116,8 @@
     justify-content: space-between;
     padding: 1%;
     border: 3px solid blue;
+    border-radius: 5px;
+    margin: 1%;
 }
 .editBtn {
     position: absolute;
