@@ -48,7 +48,10 @@ function updateTime() {
             
       });
       let [hrs,mins,secs] = exactTime.split(':')
+      let isPM = secs.slice(secs.indexOf(' ')+1) == 'PM' ? true : false
             secs = secs.slice(0, secs.indexOf(' '))
+          
+          if (isPM) hrs = Number(hrs) + 12
 
 
       secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
@@ -62,12 +65,14 @@ function updateTime() {
 }
 function updateAlertTimers() {
     allTasks.forEach(task => {
-        console.log('sss', task.startHour)
+        task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
         task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
+        task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
     })
 }
 window.onload = function runOnBoot() { //loads current date
-    
+
+    console.log(secondsPassedInDay)
     const date = new Date()
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
@@ -90,9 +95,7 @@ window.onload = function runOnBoot() { //loads current date
     currentDayNameHTML.textContent =`${dayName}`
     currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
     UpdateRenderTasks()
-    updateAlertTimers()
     updateTime()
-
   
     updateBtn.onclick  = updateBtnHandler
     this.setInterval(updateTime, 999)
@@ -118,6 +121,7 @@ function UpdateRenderTasks() {
 
 
     allTasks.forEach((task,i)=> {
+        console.log(task.startHour)
         task.index = i
          format += `        
     <section id="tasksWrapper-${task.index}">
@@ -180,7 +184,6 @@ function updateBtnHandler() {
 
     closeModal()
     UpdateRenderTasks()
-    console.log(secondsPassedInDay - allTasks[id].alertTimer)
     // updateTime()
    
 } 
