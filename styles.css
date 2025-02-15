@@ -15,7 +15,7 @@
     color: #222;
     position: relative;
     min-height: 100dvh;
-    background-color: deepskyblue;
+    background-color: turquoise;
   }
   
   .modal {
@@ -129,5 +129,5 @@
 .countdownTimer {
   color: red;
   font-weight: bolder;
-  font-size: 18px;
+  font-size: 18;
 }
