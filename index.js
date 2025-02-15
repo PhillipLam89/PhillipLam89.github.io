@@ -1,4 +1,68 @@
 let secondsPassedInDay = 0
+let allTasks = [
+    {startHour: '3', startMinutes: '06', Goal: 'ERROR, SAMPLE GOAL 1', Done:false, index:0,
+                   isPM: false, trueValue: 3*60 + 4
+    },
+    {startHour: '11',startMinutes:'30', Goal: 'ERROR, SAMPLE GOAL 2', Done:false, index:1, isPM: true,
+                    trueValue: 23*60 + 30
+    },
+    {startHour: '3',startMinutes:'44', Goal:  'ERROR, SAMPLE GOAL 3', Done:false, index:2, isPM: true,
+                    trueValue: 15*60 + 10
+    
+    }    
+]
+
+function handleTaskStatus(index) {
+    const current = document.querySelector(`#task-${index}-status`)
+    if (secondsPassedInDay - allTasks[index].alertTimer >= 3600) {
+   
+
+
+        current.innerHTML = ''
+        current.innerHTML = `<p>PASSED</p><p> (more than 1 hr ago)</p>`
+      
+        current.style.color= 'red' 
+        return
+    }
+    if (secondsPassedInDay - allTasks[index].alertTimer < 3600 &&
+        secondsPassedInDay - allTasks[index].alertTimer >= 0
+    ) {
+
+        current.textContent = 'DO NOW'
+        current.style.color= 'green' 
+
+    } if (Math.abs(secondsPassedInDay - allTasks[index].alertTimer) > 3600 ) {
+        current.textContent = 'SCHEDULED'
+        current.style.color= 'brown'
+        current.style.fontweight = 'goldenrod'
+              
+    }
+    secondsPassedInDay--
+    allTasks[index].alertTimer--
+}
+
+function updateTime() {
+
+        const date = new Date()
+        let exactTime = date.toLocaleString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            
+      });
+      let [hrs,mins,secs] = exactTime.split(':')
+            secs = secs.slice(0, secs.indexOf(' '))
+
+
+      secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
+      currentTimeHTML.textContent = `${exactTime}`
+
+    
+
+     //update seconds passed for all tasks
+      allTasks.forEach((t, i) => handleTaskStatus(i))
+   
+}
 window.onload = function runOnBoot() { //loads current date
     allTasks.forEach(task => {
         task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
@@ -19,35 +83,15 @@ window.onload = function runOnBoot() { //loads current date
 
     
     
-    function updateTime() {
-        const date = new Date()
-        let exactTime = date.toLocaleString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            
-      });
-      let [hrs,mins,secs] = exactTime.split(':')
-            secs = secs.slice(0, secs.indexOf(' '))
-
-
-      secondsPassedInDay = (hrs * 60**2) + (mins * 60) + (secs * 1)
-      currentTimeHTML.textContent = `${exactTime}`
-
-
-
-     //update seconds passed for all tasks
-     allTasks.forEach(task => {
-        task.alertTimer--
-    }) 
-    }
+ 
 
                              
-        currentDayNameHTML.textContent =`${dayName}`
-        currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
-        updateTime()
-
+    currentDayNameHTML.textContent =`${dayName}`
+    currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
     UpdateRenderTasks()
+    updateTime()
+
+  
     updateBtn.onclick  = updateBtnHandler
     this.setInterval(updateTime, 999)
 }
@@ -60,33 +104,22 @@ const daysOfWeekSuffixes = {
     Sat: 'urday'
 }
 
-let allTasks = [
-    {startHour: '3', startMinutes: '04', Goal: 'ERROR, SAMPLE GOAL 1', Done:false, index:0,
-                   isPM: false, trueValue: 3*60 + 4
-    },
-    {startHour: '11',startMinutes:'30', Goal: 'ERROR, SAMPLE GOAL 2', Done:false, index:1, isPM: true,
-                    trueValue: 23*60 + 30
-    },
-    {startHour: '3',startMinutes:'10', Goal:  'ERROR, SAMPLE GOAL 3', Done:false, index:2, isPM: true,
-                    trueValue: 15*60 + 10
-    
-    }    
-]
 
-console.log(allTasks)
+
 let lastTaskClickedOn = null
 
 
 function UpdateRenderTasks() {
-
-    allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
-    allTasks.forEach((task,i) => task.index = i)
     let format = ``
+    allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
+    
 
-    allTasks.forEach(task => {
+    allTasks.forEach((task,i)=> {
+        task.index = i
          format += `        
     <section id="tasksWrapper-${task.index}">
           <div>
+           <span class="taskStatusHTML" id="task-${task.index}-status"></span>
             <h2>Time:</h2>
              <p id="startHour-${task.index}">${task.startHour}:<span id="startMinutes-${task.index}">${task.startMinutes}</span><span id="AMPM"> ${task.isPM ? 'PM' : 'AM'}</span>
             </p>
