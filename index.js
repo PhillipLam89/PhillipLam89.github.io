@@ -6,39 +6,36 @@ let allTasks = [
     {startHour: '11',startMinutes:'30', Goal: 'ERROR, SAMPLE GOAL 2', Done:false, index:1, isPM: true,
                     trueValue: 23*60 + 30
     },
-    {startHour: '3',startMinutes:'44', Goal:  'ERROR, SAMPLE GOAL 3', Done:false, index:2, isPM: true,
+    {startHour: '3',startMinutes:'58', Goal:  'ERROR, SAMPLE GOAL 3', Done:false, index:2, isPM: true,
                     trueValue: 15*60 + 10
     
     }    
 ]
 
 function handleTaskStatus(index) {
+    const task = allTasks[index]
     const current = document.querySelector(`#task-${index}-status`)
-    if (secondsPassedInDay - allTasks[index].alertTimer >= 3600) {
-   
-
-
+  
+    if (secondsPassedInDay - task.alertTimer >= 3600) {
         current.innerHTML = ''
         current.innerHTML = `<p>PASSED</p><p> (more than 1 hr ago)</p>`
-      
         current.style.color= 'red' 
         return
     }
-    if (secondsPassedInDay - allTasks[index].alertTimer < 3600 &&
-        secondsPassedInDay - allTasks[index].alertTimer >= 0
+    if (secondsPassedInDay - task.alertTimer <= 3600 &&
+        secondsPassedInDay - task.alertTimer >= 0
     ) {
-
         current.textContent = 'DO NOW'
         current.style.color= 'green' 
 
-    } if (Math.abs(secondsPassedInDay - allTasks[index].alertTimer) > 3600 ) {
+    } if (Math.abs(secondsPassedInDay - task.alertTimer) > 3600 ) {
         current.textContent = 'SCHEDULED'
-        current.style.color= 'brown'
-        current.style.fontweight = 'goldenrod'
+        current.style.color= 'goldenrod'
+        current.style.fontweight = 'bolder'
               
     }
-    secondsPassedInDay--
-    allTasks[index].alertTimer--
+
+    task.alertTimer--
 }
 
 function updateTime() {
@@ -63,10 +60,14 @@ function updateTime() {
       allTasks.forEach((t, i) => handleTaskStatus(i))
    
 }
-window.onload = function runOnBoot() { //loads current date
+function updateAlertTimers() {
     allTasks.forEach(task => {
+        console.log('sss', task.startHour)
         task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
     })
+}
+window.onload = function runOnBoot() { //loads current date
+    
     const date = new Date()
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
@@ -89,6 +90,7 @@ window.onload = function runOnBoot() { //loads current date
     currentDayNameHTML.textContent =`${dayName}`
     currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
     UpdateRenderTasks()
+    updateAlertTimers()
     updateTime()
 
   
@@ -113,6 +115,7 @@ function UpdateRenderTasks() {
     let format = ``
     allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
     
+
 
     allTasks.forEach((task,i)=> {
         task.index = i
@@ -140,6 +143,8 @@ function UpdateRenderTasks() {
     </section>
     <br>
 `       
+        updateAlertTimers()
+        
         bigDaddyWrapper.innerHTML = ''
         bigDaddyWrapper.innerHTML = format
         addEditListeners()
@@ -169,11 +174,15 @@ function updateBtnHandler() {
 
     allTasks[id] = newObj
    
-    handleAMPM(id)
     
+    handleAMPM(id)
+    updateAlertTimers()
 
     closeModal()
     UpdateRenderTasks()
+    console.log(secondsPassedInDay - allTasks[id].alertTimer)
+    // updateTime()
+   
 } 
 
 function handleAMPM(id) {
@@ -189,7 +198,9 @@ function handleAMPM(id) {
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
         task.startHour = task.startHour == 12 ? 12 : task.startHour - 12
     } else {
+        task.isPM = false
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
+        console.log(id, task.startHour)
     }
 
 }
