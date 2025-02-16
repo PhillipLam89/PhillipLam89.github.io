@@ -120,7 +120,7 @@ function updateTime() {
 function updateAlertTimers() {
     allTasks.forEach(task => {
         if (task.startHour == 12 && task.isPM) {
-            
+            task.startHour = 12
             task.alertTimer = task.startHour * 3600 + task.startMinutes * 60
             return
         }         
@@ -179,7 +179,7 @@ function handleTaskStatus(index) {
         current.style.color= 'green'
         countdownStatus.style.color = current.style.color
         countdownStatus.previousElementSibling.textContent = 'Remaining:'
-        countdownStatus.textContent =  runTaskCountdown(secondsPassedInDay - task.alertTimer, countdownStatus,task)
+        countdownStatus.textContent =  runTaskCountdown(task.alertTimer + 3600 - secondsPassedInDay, countdownStatus,task)
         countdownStatus.style.color = 'green'
         countdownStatus.classList.remove('blink-class')
         // countdownStatus.previousElementSibling.classList.add('hidden')
