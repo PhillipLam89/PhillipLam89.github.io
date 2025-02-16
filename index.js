@@ -16,6 +16,7 @@ allTasks = JSON.parse(localStorage.getItem('data'))
          || allTasks
 
 
+
 function handleTaskStatus(index) {
     const task = allTasks[index]
     
@@ -83,9 +84,9 @@ function handleTaskStatus(index) {
 function updateTime() {
         const date = new Date()
         let exactTime = date.toLocaleString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
             
       });
       let [hrs,mins,secs] = exactTime.split(':')
@@ -116,35 +117,20 @@ function updateAlertTimers() {
     })
 }
 window.onload = function runOnBoot() { //loads current date
-
-    const date = new Date()
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-    const dayNumber = String(date.getDate()).padStart(2, '0');
-    
-    let dayName = new Date()
-        dayName = String(dayName)
-        dayName = dayName.slice(0, dayName.indexOf(' '))
-        
-        const dayIndex = Object.keys(daysOfWeekSuffixes)
-                        .find(day => day.includes(dayName))
- 
-        dayName += daysOfWeekSuffixes[dayIndex]
-                          
-    currentDayNameHTML.textContent =`${dayName}`
-    currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
+    const date = new Date()        
+    currentDayNameHTML.textContent =`${date.toLocaleString("en-US", {weekday: "long"})}`
+   
+    const fullDate = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+      };
+    currentDateHTML.textContent = 
+        `${date.toLocaleString('en-US', fullDate)}`
 
     UpdateRenderTasks()
     updateBtn.onclick  = updateBtnHandler
     this.setInterval(updateTime, 999)
-}
-
-const daysOfWeekSuffixes = {
-    MonFriSun: 'day',
-    Wed: 'nesday',
-    Tue: 'sday',
-    Thu: 'rsday',
-    Sat: 'urday'
 }
 
 let lastTaskClickedOn = null
