@@ -193,14 +193,7 @@ function updateBtnHandler() {
 
 function handleAMPM(id) {
     const task = allTasks[id]
-    if (task.startHour == 0) {
-        task.startHour = 12
-        task.isPM = false
-    
-        task.trueValue = 0 + task.startMinutes
-      
-       return
-    }
+
     if (task.startHour >= 12) {
         task.isPM = true
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
@@ -213,7 +206,6 @@ function handleAMPM(id) {
   
     }
     
-
 }
 
 function addEditListeners() {
