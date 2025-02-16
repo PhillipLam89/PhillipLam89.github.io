@@ -114,7 +114,8 @@
     display: flex;
     position: relative;
     justify-content: space-between;
-    padding: 1%;
+    padding: 3vw;
+    min-height: 15dvh;
     border: 3px solid purple;
     border-radius: 5px;
     margin: 1%;
@@ -125,7 +126,13 @@
     right: 0;
 
   }
+.deleteBtn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 2px;
 
+}
 .countdownTimer {
   color: red;
   font-weight: bolder;
