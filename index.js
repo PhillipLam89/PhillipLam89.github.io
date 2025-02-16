@@ -33,13 +33,13 @@ function handleTaskStatus(index) {
                 document.querySelector(`#task-${index}-countdown`).style.color = 'red'
 
                 const hoursPassed = ~~((secondsPassedInDay - allTasks[index].alertTimer) / 3600)
-                const isNotRounded = hoursPassed === 1 ? true : false
-                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed
-                 + ` hr${!isNotRounded ? 's' : ''} ago`
+    
+                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(hoursPassed == 1 ? 0 : 1)
+                 + ` hr${hoursPassed == 1 ? '' : 's'} ago`
                  
         return
     }
-    function runTaskCountdown(totalSeconds, element,task,index) {
+    function runTaskCountdown(totalSeconds, element,task) {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60
@@ -73,7 +73,7 @@ function handleTaskStatus(index) {
         current.textContent = 'SCHEDULED'
         current.style.color= 'gold'
      
-        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task, index)
+        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
     }
 }
 
@@ -260,6 +260,4 @@ function addBtnListeners() {
         }) 
     }
     addEditListeners()
-
- 
 }
