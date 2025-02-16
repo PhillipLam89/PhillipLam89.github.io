@@ -63,7 +63,9 @@ function handleTaskStatus(index) {
         
         current.style.color= 'green'
         countdownStatus.style.color=current.style.color
-        countdownStatus.textContent = 'IN PROGRESS'
+        countdownStatus.innerHTML = `<h3>In Progress</h3>
+                                     <p>${runTaskCountdown(task.alertTimer + 3600 - secondsPassedInDay, countdownStatus, task)}</p>`
+        countdownStatus.style.color = 'green'
         countdownStatus.classList.remove('blink-class')
         countdownStatus.previousElementSibling.classList.add('hidden')
         document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
