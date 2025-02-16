@@ -32,10 +32,11 @@ function handleTaskStatus(index) {
       
                 document.querySelector(`#task-${index}-countdown`).style.color = 'red'
 
-                const hoursPassed = ~~((secondsPassedInDay - allTasks[index].alertTimer) / 3600)
-    
-                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(hoursPassed == 1 ? 0 : 1)
-                 + ` hr${hoursPassed == 1 ? '' : 's'} ago`
+                const hoursPassed = (secondsPassedInDay - allTasks[index].alertTimer) / 3600
+                const noSigFigs = String(hoursPassed.toFixed(1)) <= 1 ? true : false
+                
+                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
+                 + ` hr${noSigFigs  ? '' : 's'} ago`
                  
         return
     }
