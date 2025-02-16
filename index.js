@@ -1,4 +1,11 @@
+window.onload = function runOnBoot() { //loads current date
+    updateToNewDay()
+    UpdateRenderTasks()
+    updateBtn.onclick  = updateBtnHandler
+    this.setInterval(updateTime, 999)
+}
 let secondsPassedInDay = 0
+let lastTaskClickedOn = null
 let allTasks = [
     {startHour: '10', startMinutes: '36', Goal: 'ERROR, SAMPLE GOAL 1', Done:false, index:0,
                    isPM: true, trueValue: 22*60 + 36
@@ -15,114 +22,6 @@ let allTasks = [
 allTasks = JSON.parse(localStorage.getItem('data'))
          || allTasks
 
-
-
-function handleTaskStatus(index) {
-    const task = allTasks[index]
-    
-    const current = document.querySelector(`#task-${index}-status`)
-    const countdownStatus = document.querySelector(`#task-${index}-countdown`)
-    if (secondsPassedInDay - task.alertTimer >= 3600) {
-        current.innerHTML = ''
-        current.innerHTML = `<p >PASSED</p><p> (More than <span id="task-${index}-hrsElapsed">1</span>)</p>`
-        current.style.color= 'red' 
-        countdownStatus.previousElementSibling.classList.add('hidden')
-        countdownStatus.textContent = 'PASSED'
-
-                document.querySelector(`#tasksWrapper-${index}`).style.opacity = 0.65
-      
-                document.querySelector(`#task-${index}-countdown`).style.color = 'red'
-
-                const hoursPassed = (secondsPassedInDay - allTasks[index].alertTimer) / 3600
-                const noSigFigs = String(hoursPassed.toFixed(1)) <= 1 ? true : false
-                
-                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
-                 + ` hr${noSigFigs  ? '' : 's'} ago`
-                 
-        return
-    }
-    function runTaskCountdown(totalSeconds, element,task) {
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60
-     
-        !hours && minutes <= 5 && 
-        !element.className.includes('blink-class') &&
-        element.classList.add('blink-class')
-
-        const h = hours.toString().padStart(2, '0');
-        const m = minutes.toString().padStart(2, '0');
-        const s = seconds.toString().padStart(2, '0');
-      
-         element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
-        element.textContent = `${h}:${m}:${s}`
-        return `${h}:${m}:${s}`;       
-    }
-
-    if (task.alertTimer < secondsPassedInDay) {
-        current.textContent = 'DO NOW'
-        
-        current.style.color= 'green'
-        countdownStatus.style.color=current.style.color
-        countdownStatus.innerHTML = `<h3>In Progress</h3>
-                                     <p>${runTaskCountdown(task.alertTimer + 3600 - secondsPassedInDay, countdownStatus, task)}</p>`
-        countdownStatus.style.color = 'green'
-        countdownStatus.classList.remove('blink-class')
-        countdownStatus.previousElementSibling.classList.add('hidden')
-        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
-        document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
-    
-    } 
-     if (task.alertTimer > secondsPassedInDay) {
-        current.textContent = 'SCHEDULED'
-        current.style.color= 'gold'
-     
-        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
-    }
-}
-
-function updateTime() {
-        const date = new Date()
-        let exactTime = date.toLocaleString([], {
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            
-      });
-      let [hrs,mins,secs] = exactTime.split(':')
-      let isPM = secs.slice(secs.indexOf(' ')+1) == 'PM' ? true : false
-            secs = secs.slice(0, secs.indexOf(' '))
-          
-          if (isPM) hrs = Number(hrs) + 12
-
-
-          if (!isPM && hrs == 12) hrs = 0
-      secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
-      
-      currentTimeHTML.textContent = `${exactTime}`
-
-     //update seconds passed for all tasks
-      allTasks.forEach((t, i) => handleTaskStatus(i))
-
-      // updates if time passes to a new date
-      const currentDate = new Date()
-
-      const isItNewDay = currentDate.toLocaleString("en-US", {weekday: "long"}).trim() 
-                         !== currentDayNameHTML.textContent.trim()
-      isItNewDay && updateToNewDay()
-}
-function updateAlertTimers() {
-    allTasks.forEach(task => {
-        if (task.startHour == 12 && task.isPM) {
-            task.alertTimer = task.startHour * 3600 + task.startMinutes * 60
-            return
-        }         
-        task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
-        task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
-        task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
-
-    })
-}
 function updateToNewDay() { // only called in updateTime when appropriate
     const date = new Date()        
    
@@ -137,17 +36,6 @@ function updateToNewDay() { // only called in updateTime when appropriate
     currentDateHTML.textContent = 
         `${date.toLocaleString('en-US', fullDate)}`
 }
-window.onload = function runOnBoot() { //loads current date
-
-    updateToNewDay()
-    UpdateRenderTasks()
-    updateBtn.onclick  = updateBtnHandler
-    this.setInterval(updateTime, 999)
-}
-
-let lastTaskClickedOn = null
-
-
 function UpdateRenderTasks() {
     let format = ``
     allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
@@ -181,11 +69,57 @@ function UpdateRenderTasks() {
     </section>
     
 `          
-        updateAlertTimers()
 
-        bigDaddyWrapper.innerHTML = ''
-        bigDaddyWrapper.innerHTML = format
-        addBtnListeners()
+    updateAlertTimers()
+    function updateAlertTimers() {
+        allTasks.forEach(task => {
+            if (task.startHour == 12 && task.isPM) {
+                task.alertTimer = task.startHour * 3600 + task.startMinutes * 60
+                return
+            }         
+            task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
+            task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
+            task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
+
+        })
+    }
+
+    bigDaddyWrapper.innerHTML = ''
+    bigDaddyWrapper.innerHTML = format
+
+    attachBtnListeners()
+    function attachBtnListeners() {
+        const addDeleteListeners = () => {
+            const allDeleteBtns = this.document.querySelectorAll('.deleteBtn')
+    
+            allDeleteBtns.forEach(btn => btn.onclick = function(e) {
+                 const deleteID = e.target.id.slice(e.target.id.indexOf('-')+1)
+              
+                 allTasks = allTasks.filter(task => task.index != deleteID)             
+                 UpdateRenderTasks()
+             
+            })  
+        }
+        addDeleteListeners()
+       
+        const addEditListeners = () => {
+            const allEditBtns = this.document.querySelectorAll('.editBtn')
+            allEditBtns.forEach(btn => btn.onclick = function(e) {
+                
+                let id = e.target.id
+                    id = id.slice(id.indexOf('-')+1,)
+                    lastTaskClickedOn = id
+                    openModal()
+                
+                const entryHour = document.querySelector(`#startHour-${id}`).textContent
+                oldTaskTime.textContent = entryHour
+                currentGoalInput.value = allTasks[id]?.Goal
+        
+            }) 
+        }
+        addEditListeners()
+    }
+    
     })
     localStorage.setItem('data', JSON.stringify(allTasks))
     // if (!allTasks.length) {bigDaddyWrapper.innerHTML = ''}
@@ -211,56 +145,121 @@ function updateBtnHandler() {
 
     allTasks[id] = newObj
    
+    function handleAMPM(id) {
+        const task = allTasks[id]
+    
+        if (task.startHour >= 12) {
+            task.isPM = true
+            task.trueValue = (task.startHour * 60) + ~~task.startMinutes
+           
+            task.startHour = task.startHour == 12 ? 12 : task.startHour - 12
+        } else {
+            task.isPM = false
+            task.trueValue = (task.startHour * 60) + ~~task.startMinutes
+      
+        }
+        
+    }
+
     handleAMPM(id)
     closeModal()
     UpdateRenderTasks()
    
 } 
-
-function handleAMPM(id) {
-    const task = allTasks[id]
-
-    if (task.startHour >= 12) {
-        task.isPM = true
-        task.trueValue = (task.startHour * 60) + ~~task.startMinutes
-       
-        task.startHour = task.startHour == 12 ? 12 : task.startHour - 12
-    } else {
-        task.isPM = false
-        task.trueValue = (task.startHour * 60) + ~~task.startMinutes
-  
-    }
-    
-}
-
-function addBtnListeners() {
-    const addDeleteListeners = () => {
-        const allDeleteBtns = this.document.querySelectorAll('.deleteBtn')
-
-        allDeleteBtns.forEach(btn => btn.onclick = function(e) {
-             const deleteID = e.target.id.slice(e.target.id.indexOf('-')+1)
+function updateTime() {
+        const date = new Date()
+        let exactTime = date.toLocaleString([], {
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            
+      });
+      let [hrs,mins,secs] = exactTime.split(':')
+      let isPM = secs.slice(secs.indexOf(' ')+1) == 'PM' ? true : false
+            secs = secs.slice(0, secs.indexOf(' '))
           
-             allTasks = allTasks.filter(task => task.index != deleteID)             
-             UpdateRenderTasks()
-         
-        })  
-    }
-    addDeleteListeners()
-   
-    const addEditListeners = () => {
-        const allEditBtns = this.document.querySelectorAll('.editBtn')
-        allEditBtns.forEach(btn => btn.onclick = function(e) {
-            
-            let id = e.target.id
-                id = id.slice(id.indexOf('-')+1,)
-                lastTaskClickedOn = id
-                openModal()
-            
-            const entryHour = document.querySelector(`#startHour-${id}`).textContent
-            oldTaskTime.textContent = entryHour
-            currentGoalInput.value = allTasks[id]?.Goal
+          if (isPM) hrs = Number(hrs) + 12
+
+          if (!isPM && hrs == 12) hrs = 0
+      secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
+      
+      currentTimeHTML.textContent = `${exactTime}`
+
+     //update seconds passed for all tasks
+     
+     allTasks.forEach((t, i) => handleTaskStatus(i))
+
+
+     function handleTaskStatus (index) {
+        const task = allTasks[index]
+        
+        const current = document.querySelector(`#task-${index}-status`)
+        const countdownStatus = document.querySelector(`#task-${index}-countdown`)
+        
+        if (secondsPassedInDay - task.alertTimer >= 3600) {
+            current.innerHTML = ''
+            current.innerHTML = `<p >PASSED</p><p> (More than <span id="task-${index}-hrsElapsed">1</span>)</p>`
+            current.style.color= 'red' 
+            countdownStatus.previousElementSibling.classList.add('hidden')
+            countdownStatus.textContent = 'PASSED'
     
-        }) 
-    }
-    addEditListeners()
+                    document.querySelector(`#tasksWrapper-${index}`).style.opacity = 0.65
+        
+                    document.querySelector(`#task-${index}-countdown`).style.color = 'red'
+    
+                    const hoursPassed = (secondsPassedInDay - allTasks[index].alertTimer) / 3600
+                    const noSigFigs = String(hoursPassed.toFixed(1)) <= 1 ? true : false
+                    
+                    document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
+                    + ` hr${noSigFigs  ? '' : 's'} ago`
+                    
+            return
+        }
+
+    
+        if (task.alertTimer < secondsPassedInDay) {
+            current.textContent = 'DO NOW'
+            
+            current.style.color= 'green'
+            countdownStatus.style.color=current.style.color
+            countdownStatus.innerHTML = `<h3>In Progress</h3>
+                                        <p>${runTaskCountdown(task.alertTimer + 3600 - secondsPassedInDay, countdownStatus, task)}</p>`
+            countdownStatus.style.color = 'green'
+            countdownStatus.classList.remove('blink-class')
+            countdownStatus.previousElementSibling.classList.add('hidden')
+            document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
+            document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
+        
+        } 
+        if (task.alertTimer > secondsPassedInDay) {
+            current.textContent = 'SCHEDULED'
+            current.style.color= 'gold'
+        
+            runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
+        }
+     }
+
+      // updates if time passes to a new date
+      const currentDate = new Date()
+
+      const isItNewDay = currentDate.toLocaleString("en-US", {weekday: "long"}).trim() 
+                         !== currentDayNameHTML.textContent.trim()
+      isItNewDay && updateToNewDay()
+}
+function runTaskCountdown(totalSeconds, element,task) { // only called everytime updateTime is called to calculate time left until task starts/ends
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60
+
+    !hours && minutes <= 5 && 
+    !element.className.includes('blink-class') &&
+    element.classList.add('blink-class')
+
+    const h = hours.toString().padStart(2, '0');
+    const m = minutes.toString().padStart(2, '0');
+    const s = seconds.toString().padStart(2, '0');
+
+    element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
+    element.textContent = `${h}:${m}:${s}`
+    return `${h}:${m}:${s}`;       
 }
