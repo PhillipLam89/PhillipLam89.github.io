@@ -132,7 +132,7 @@ function UpdateRenderTasks() {
           </div>
 
     </section>
-    <br>
+    
 `       
         updateAlertTimers()
 
