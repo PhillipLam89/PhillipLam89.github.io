@@ -42,8 +42,11 @@ function handleTaskStatus(index) {
     function runTaskCountdown(totalSeconds, element,task,index) {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        if (hours == 0 && minutes <= 5) {element.classList.add('blink-class')}
+        const seconds = totalSeconds % 60
+     
+        !hours && minutes <= 5 && 
+        !element.className.includes('blink-class') &&
+        element.classList.add('blink-class')
 
         const h = hours.toString().padStart(2, '0');
         const m = minutes.toString().padStart(2, '0');
@@ -219,7 +222,6 @@ function handleAMPM(id) {
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
        
         task.startHour = task.startHour == 12 ? 12 : task.startHour - 12
-        console.log('rwwsdsdsd')
     } else {
         task.isPM = false
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
