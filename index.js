@@ -23,24 +23,27 @@ function handleTaskStatus(index) {
     const countdownStatus = document.querySelector(`#task-${index}-countdown`)
     if (secondsPassedInDay - task.alertTimer >= 3600) {
         current.innerHTML = ''
-        current.innerHTML = `<p>PASSED</p><p> (more than 1 hr ago)</p>`
+        current.innerHTML = `<p >PASSED</p><p> (more than 1 hr ago)</p>`
         current.style.color= 'red' 
         countdownStatus.previousElementSibling.classList.add('hidden')
         countdownStatus.textContent = 'PASSED'
+                document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid purple'
+                document.querySelector(`#task-${index}-countdown`).style.color = 'red'
         return
     }
-    function runTaskCountdown(totalSeconds, element,task) {
+    function runTaskCountdown(totalSeconds, element,task,index) {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
         if (hours == 0 && minutes <= 5) {element.classList.add('blink-class')}
+
         const h = hours.toString().padStart(2, '0');
         const m = minutes.toString().padStart(2, '0');
         const s = seconds.toString().padStart(2, '0');
       
          element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
         element.textContent = `${h}:${m}:${s}`
-
+        document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid purple'
         return `${h}:${m}:${s}`;       
     }
 
@@ -52,11 +55,14 @@ function handleTaskStatus(index) {
         countdownStatus.textContent = 'IN PROGRESS'
         countdownStatus.classList.remove('blink-class')
         countdownStatus.previousElementSibling.classList.add('hidden')
+        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
+    
     } 
      if (task.alertTimer > secondsPassedInDay) {
         current.textContent = 'SCHEDULED'
         current.style.color= 'gold'
-        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
+        document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid purple'
+        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task, index)
     }
 }
 
@@ -149,7 +155,7 @@ function UpdateRenderTasks() {
          
           </div>
           <div>
-            <h5>Countdown</h5>
+            <h5 id="timeDivTask-${task.index}">Countdown</h5>
             <p class="countdownTimer" id="task-${task.index}-countdown"></p>
           </div>
           <div class="editBtn" id="editBtnDiv-${task.index}">
