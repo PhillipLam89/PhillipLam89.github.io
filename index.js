@@ -25,7 +25,7 @@ function handleTaskStatus(index) {
         current.innerHTML = ''
         current.innerHTML = `<p>PASSED</p><p> (more than 1 hr ago)</p>`
         current.style.color= 'red' 
-        countdownStatus.previousElementSibling.style.textDecoration = 'line-through'
+        countdownStatus.previousElementSibling.classList.add('hidden')
         countdownStatus.textContent = 'PASSED'
         return
     }
@@ -35,6 +35,29 @@ function handleTaskStatus(index) {
     current.textContent = doNow || 'Scheduled'
     current.style.color=  doNow ? 'green' : 'gold'
     current.style.fontweight = 'bolder'
+    countdownStatus.style.color = 
+                current.innerHTML.includes('PASSED') ?
+                'red' : 'green'
+
+    if (current.style.color === 'green') {
+        countdownStatus.previousElementSibling.classList.add('hidden')
+        countdownStatus.textContent = 'IN PROGRESS'
+    }
+    
+    function runTaskCountdown(totalSeconds, element) {
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+      
+        const h = hours.toString().padStart(2, '0');
+        const m = minutes.toString().padStart(2, '0');
+        const s = seconds.toString().padStart(2, '0');
+        element.textContent = `${h}:${m}:${s}`
+        return `${h}:${m}:${s}`;       
+    }
+
+    current.style.color === 'gold' && runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus)
+    
 }
 
 function updateTime() {
@@ -130,7 +153,7 @@ function UpdateRenderTasks() {
           </div>
           <div>
             <h5>Countdown</h5>
-            <p class="countdownTimer" id="task-${task.index}-countdown">5:01</p>
+            <p class="countdownTimer" id="task-${task.index}-countdown"></p>
           </div>
           <div class="editBtn" id="editBtnDiv-${task.index}">
             <button id="editBtn-${task.index}">Edit/Add</button>
