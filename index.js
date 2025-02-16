@@ -1,13 +1,13 @@
 let secondsPassedInDay = 0
 let allTasks = [
-    {startHour: '3', startMinutes: '06', Goal: 'ERROR, SAMPLE GOAL 1', Done:false, index:0,
-                   isPM: true, trueValue: 3*60 + 4
+    {startHour: '10', startMinutes: '36', Goal: 'ERROR, SAMPLE GOAL 1', Done:false, index:0,
+                   isPM: true, trueValue: 22*60 + 36
     },
-    {startHour: '11',startMinutes:'30', Goal: 'ERROR, SAMPLE GOAL 2', Done:false, index:1, isPM: true,
-                    trueValue: 23*60 + 30
+    {startHour: '3',startMinutes:'40', Goal: 'ERROR, SAMPLE GOAL 2', Done:false, index:1, isPM: true,
+                    trueValue: 15*60 + 40
     },
-    {startHour: '3',startMinutes:'48', Goal:  'ERROR, SAMPLE GOAL 3', Done:false, index:2, isPM: true,
-                    trueValue: 15*60 + 10
+    {startHour: '1',startMinutes:'08', Goal:  'ERROR, SAMPLE GOAL 3', Done:false, index:2, isPM: false,
+                    trueValue: 1 + 8
     
     }    
 ]
@@ -24,26 +24,12 @@ function handleTaskStatus(index) {
         countdownStatus.textContent = 'PASSED'
         return
     }
-    if (secondsPassedInDay > task.alertTimer) {
-        // console.log(secondsPassedInDay, task.alertTimer)
-           
-        current.textContent = 'DO NOW'
-        current.style.color= 'green' 
-    } else {
-        current.textContent = 'SCHEDULED'
-        current.style.color= 'gold'
-        current.style.fontweight = 'bolder'
-    }
-      
+    
+    let doNow = secondsPassedInDay >= task.alertTimer ? true : false
 
-        
-
-
-    // if (Math.abs(secondsPassedInDay - task.alertTimer) > 3600 ) {
-    //     current.textContent = 'SCHEDULED'
-    //     current.style.color= 'gold'
-    //     current.style.fontweight = 'bolder'              
-    // }
+    current.textContent = doNow ? 'DO NOW' : 'SCHEDULED'
+    current.style.color=  doNow ? 'green' : 'gold'
+    current.style.fontweight = 'bolder'
 
     task.alertTimer--
 }
@@ -82,7 +68,6 @@ function updateAlertTimers() {
 }
 window.onload = function runOnBoot() { //loads current date
 
-
     const date = new Date()
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
@@ -96,12 +81,7 @@ window.onload = function runOnBoot() { //loads current date
                         .find(day => day.includes(dayName))
  
         dayName += daysOfWeekSuffixes[dayIndex]
-
-    
-    
- 
-
-                             
+                          
     currentDayNameHTML.textContent =`${dayName}`
     currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
     UpdateRenderTasks()
@@ -119,22 +99,19 @@ const daysOfWeekSuffixes = {
     Sat: 'urday'
 }
 
-
-
 let lastTaskClickedOn = null
 
 
 function UpdateRenderTasks() {
     let format = ``
     allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
-    
-
 
     allTasks.forEach((task,i)=> {
      
         task.index = i
          format += `        
     <section id="tasksWrapper-${task.index}">
+         <button class="deleteBtn" id="removeTask-${task.index}">X</button>
           <div>
            <span class="taskStatusHTML" id="task-${task.index}-status"></span>
             <h2>Time:</h2>
@@ -158,16 +135,13 @@ function UpdateRenderTasks() {
     <br>
 `       
         updateAlertTimers()
-        
+
         bigDaddyWrapper.innerHTML = ''
         bigDaddyWrapper.innerHTML = format
         addEditListeners()
     })
+    if (allTasks.length === 1) {document.querySelector('.deleteBtn').disabled = true}
 }
-
-
-
-
 
 function updateBtnHandler() {
     if (!currentGoalInput.value || !timeInput.value) {
@@ -188,13 +162,9 @@ function updateBtnHandler() {
 
     allTasks[id] = newObj
    
-    
     handleAMPM(id)
-    // updateAlertTimers()
-
     closeModal()
     UpdateRenderTasks()
-    // updateTime()
    
 } 
 
@@ -203,8 +173,9 @@ function handleAMPM(id) {
     if (task.startHour == 0) {
         task.startHour = 12
         task.isPM = false
+        console.lo
         task.trueValue = 0 + task.startMinutes
-        updateAlertTimers()
+      
        return
     }
     if (task.startHour >= 12) {
@@ -223,6 +194,16 @@ function handleAMPM(id) {
 }
 
 function addEditListeners() {
+    const allDeleteBtns = this.document.querySelectorAll('.deleteBtn')
+
+    allDeleteBtns.forEach(btn => btn.onclick = function(e) {
+         const deleteID = e.target.id.slice(e.target.id.indexOf('-')+1)
+      
+         allTasks = allTasks.filter(task => task.index != deleteID)
+         
+         UpdateRenderTasks()
+    })  
+    
     const allEditBtns = this.document.querySelectorAll('.editBtn')
     allEditBtns.forEach(btn => btn.onclick = function(e) {
         
