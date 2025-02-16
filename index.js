@@ -66,7 +66,7 @@ function handleTaskStatus(index) {
         countdownStatus.textContent = 'IN PROGRESS'
         countdownStatus.classList.remove('blink-class')
         countdownStatus.previousElementSibling.classList.add('hidden')
-        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px solid dodgerblue'
+        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
         document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
     
     } 
@@ -103,15 +103,12 @@ function updateTime() {
 }
 function updateAlertTimers() {
     allTasks.forEach(task => {
-        task.startHour = (task.isPM && task.startHour > 12) ? (~~task.startHour + 12) : task.startHour
+        task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
         task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
         task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
         if (task.startHour == 12 && !task.isPM) {
             task.startHour  = 0
         }
-         if (task.startHour == 12 && task.isPM) {
-            task.alertTimer  = 0 + task.startMinutes * 60
-        
     })
 }
 window.onload = function runOnBoot() { //loads current date
