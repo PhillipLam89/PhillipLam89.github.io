@@ -36,6 +36,7 @@ function handleTaskStatus(index) {
                 const isNotRounded = hoursPassed === 1 ? true : false
                 document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed
                  + ` hr${!isNotRounded ? 's' : ''} ago`
+                 
         return
     }
     function runTaskCountdown(totalSeconds, element,task,index) {
@@ -62,6 +63,7 @@ function handleTaskStatus(index) {
         countdownStatus.classList.remove('blink-class')
         countdownStatus.previousElementSibling.classList.add('hidden')
         document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
+        document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
     
     } 
      if (task.alertTimer > secondsPassedInDay) {
@@ -87,7 +89,9 @@ function updateTime() {
           if (isPM) hrs = Number(hrs) + 12
 
 
+          if (!isPM && hrs == 12) hrs = 0
       secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
+      
       currentTimeHTML.textContent = `${exactTime}`
 
      //update seconds passed for all tasks
@@ -98,7 +102,7 @@ function updateAlertTimers() {
         task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
         task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
         task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
-        if (task.startHour == 12 && task.isPM) {
+        if (task.startHour == 12 && !task.isPM) {
             task.startHour  = 0
         }
     })
