@@ -66,7 +66,7 @@ function handleTaskStatus(index) {
         countdownStatus.textContent = 'IN PROGRESS'
         countdownStatus.classList.remove('blink-class')
         countdownStatus.previousElementSibling.classList.add('hidden')
-        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
+        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px solid dodgerblue'
         document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
     
     } 
