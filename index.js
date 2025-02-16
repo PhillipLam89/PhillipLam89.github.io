@@ -33,12 +33,14 @@ function handleTaskStatus(index) {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-      
+        if (hours == 0 && minutes <= 5) {element.classList.add('blink-class')}
         const h = hours.toString().padStart(2, '0');
         const m = minutes.toString().padStart(2, '0');
         const s = seconds.toString().padStart(2, '0');
-        element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
+      
+         element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
         element.textContent = `${h}:${m}:${s}`
+
         return `${h}:${m}:${s}`;       
     }
 
@@ -48,6 +50,7 @@ function handleTaskStatus(index) {
         current.style.color= 'green'
         countdownStatus.style.color=current.style.color
         countdownStatus.textContent = 'IN PROGRESS'
+        countdownStatus.classList.remove('blink-class')
         countdownStatus.previousElementSibling.classList.add('hidden')
     } 
      if (task.alertTimer > secondsPassedInDay) {
