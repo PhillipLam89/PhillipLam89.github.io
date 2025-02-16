@@ -23,12 +23,18 @@ function handleTaskStatus(index) {
     const countdownStatus = document.querySelector(`#task-${index}-countdown`)
     if (secondsPassedInDay - task.alertTimer >= 3600) {
         current.innerHTML = ''
-        current.innerHTML = `<p >PASSED</p><p> (more than 1 hr ago)</p>`
+        current.innerHTML = `<p >PASSED</p><p> (More than <span id="task-${index}-hrsElapsed">1</span>)</p>`
         current.style.color= 'red' 
         countdownStatus.previousElementSibling.classList.add('hidden')
         countdownStatus.textContent = 'PASSED'
                 document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid purple'
+
                 document.querySelector(`#task-${index}-countdown`).style.color = 'red'
+
+                const hoursPassed = ~~((secondsPassedInDay - allTasks[index].alertTimer) / 3600)
+                const isNotRounded = hoursPassed === 1 ? true : false
+                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed
+                 + ` hr${!isNotRounded ? 's' : ''} ago`
         return
     }
     function runTaskCountdown(totalSeconds, element,task,index) {
