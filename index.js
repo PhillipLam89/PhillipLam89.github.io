@@ -12,8 +12,13 @@ let allTasks = [
     }    
 ]
 
+allTasks = JSON.parse(localStorage.getItem('data'))
+         || allTasks
+
+
 function handleTaskStatus(index) {
     const task = allTasks[index]
+    
     const current = document.querySelector(`#task-${index}-status`)
     const countdownStatus = document.querySelector(`#task-${index}-countdown`)
     if (secondsPassedInDay - task.alertTimer >= 3600) {
@@ -25,13 +30,11 @@ function handleTaskStatus(index) {
         return
     }
     
-    let doNow = secondsPassedInDay >= task.alertTimer ? true : false
+    let doNow = secondsPassedInDay >= task.alertTimer ? 'DO NOW' : 0;
 
-    current.textContent = doNow ? 'DO NOW' : 'SCHEDULED'
+    current.textContent = doNow || 'Scheduled'
     current.style.color=  doNow ? 'green' : 'gold'
     current.style.fontweight = 'bolder'
-
-    task.alertTimer--
 }
 
 function updateTime() {
@@ -84,6 +87,7 @@ window.onload = function runOnBoot() { //loads current date
                           
     currentDayNameHTML.textContent =`${dayName}`
     currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
+
     UpdateRenderTasks()
 
   
@@ -105,10 +109,11 @@ let lastTaskClickedOn = null
 function UpdateRenderTasks() {
     let format = ``
     allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
-
+  
     allTasks.forEach((task,i)=> {
-     
+   
         task.index = i
+       
          format += `        
     <section id="tasksWrapper-${task.index}">
          <button class="deleteBtn" id="removeTask-${task.index}">X</button>
@@ -134,12 +139,15 @@ function UpdateRenderTasks() {
     </section>
     
 `       
+       
         updateAlertTimers()
 
         bigDaddyWrapper.innerHTML = ''
         bigDaddyWrapper.innerHTML = format
         addEditListeners()
     })
+    localStorage.setItem('data', JSON.stringify(allTasks))
+    // if (!allTasks.length) {bigDaddyWrapper.innerHTML = ''}
     if (allTasks.length === 1) {document.querySelector('.deleteBtn').disabled = true}
 }
 
@@ -148,6 +156,7 @@ function updateBtnHandler() {
         alert('fill out form')
         return
     }
+
     let id = lastTaskClickedOn
     let startHour = timeInput.value.slice(0, timeInput.value.indexOf(':'))
 
@@ -173,7 +182,7 @@ function handleAMPM(id) {
     if (task.startHour == 0) {
         task.startHour = 12
         task.isPM = false
-        console.lo
+    
         task.trueValue = 0 + task.startMinutes
       
        return
@@ -199,9 +208,9 @@ function addEditListeners() {
     allDeleteBtns.forEach(btn => btn.onclick = function(e) {
          const deleteID = e.target.id.slice(e.target.id.indexOf('-')+1)
       
-         allTasks = allTasks.filter(task => task.index != deleteID)
-         
+         allTasks = allTasks.filter(task => task.index != deleteID)             
          UpdateRenderTasks()
+     
     })  
     
     const allEditBtns = this.document.querySelectorAll('.editBtn')
@@ -214,7 +223,7 @@ function addEditListeners() {
         
         const entryHour = document.querySelector(`#startHour-${id}`).textContent
         oldTaskTime.textContent = entryHour
-        currentGoalInput.value = allTasks[id].Goal
+        currentGoalInput.value = allTasks[id]?.Goal
 
     }) 
  
