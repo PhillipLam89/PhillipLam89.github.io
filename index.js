@@ -29,7 +29,7 @@ function handleTaskStatus(index) {
         countdownStatus.textContent = 'PASSED'
         return
     }
-    function runTaskCountdown(totalSeconds, element) {
+    function runTaskCountdown(totalSeconds, element,task) {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
@@ -37,6 +37,7 @@ function handleTaskStatus(index) {
         const h = hours.toString().padStart(2, '0');
         const m = minutes.toString().padStart(2, '0');
         const s = seconds.toString().padStart(2, '0');
+        element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
         element.textContent = `${h}:${m}:${s}`
         return `${h}:${m}:${s}`;       
     }
@@ -52,7 +53,7 @@ function handleTaskStatus(index) {
      if (task.alertTimer > secondsPassedInDay) {
         current.textContent = 'SCHEDULED'
         current.style.color= 'gold'
-        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus)
+        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
     }
 }
 
