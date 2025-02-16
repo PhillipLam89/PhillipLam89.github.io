@@ -54,29 +54,9 @@ function handleTaskStatus(index) {
         current.style.color= 'gold'
         runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus)
     }
-
-    // let doNow = secondsPassedInDay >= task.alertTimer ? 'DO NOW' : 0;
-    // current.textContent = doNow || 'Scheduled'
-    // current.style.color=  doNow ? 'green' : 'gold'
-    // current.style.fontweight = 'bolder'
-    // console.log(current.firstChild.textContent,countdownStatus.style.color)
-    // countdownStatus.style.color = 
-    //             current.firstChild.textContent.includes('PASSED') ?
-    //             'red' : 'green'
-
-    // if (current.style.color === 'green') {
-    //     countdownStatus.previousElementSibling.classList.add('hidden')
-    //     countdownStatus.textContent = 'IN PROGRESS'
-    // }
-    
-
-
-    // current.style.color === 'gold' && runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus)
-    
 }
 
 function updateTime() {
-
         const date = new Date()
         let exactTime = date.toLocaleString([], {
             hour: "2-digit",
@@ -94,11 +74,8 @@ function updateTime() {
       secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
       currentTimeHTML.textContent = `${exactTime}`
 
-    
-
      //update seconds passed for all tasks
       allTasks.forEach((t, i) => handleTaskStatus(i))
-   
 }
 function updateAlertTimers() {
     allTasks.forEach(task => {
@@ -130,8 +107,6 @@ window.onload = function runOnBoot() { //loads current date
     currentDateHTML.textContent = `${month}-${dayNumber}-${year}`
 
     UpdateRenderTasks()
-
-  
     updateBtn.onclick  = updateBtnHandler
     this.setInterval(updateTime, 999)
 }
@@ -148,7 +123,6 @@ let lastTaskClickedOn = null
 
 
 function UpdateRenderTasks() {
-    console.log('update render task ran', allTasks)
     let format = ``
     allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
   
@@ -180,8 +154,7 @@ function UpdateRenderTasks() {
 
     </section>
     
-`       
-       
+`          
         updateAlertTimers()
 
         bigDaddyWrapper.innerHTML = ''
@@ -201,7 +174,6 @@ function updateBtnHandler() {
 
     let id = lastTaskClickedOn
     let startHour = timeInput.value.slice(0, timeInput.value.indexOf(':'))
-        console.log(startHour)
     const startMinutes = timeInput.value.slice(timeInput.value.indexOf(':')+1)
    
     const newObj = {}
