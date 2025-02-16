@@ -27,8 +27,9 @@ function handleTaskStatus(index) {
         current.style.color= 'red' 
         countdownStatus.previousElementSibling.classList.add('hidden')
         countdownStatus.textContent = 'PASSED'
-                document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid purple'
-
+                document.querySelector(`#tasksWrapper-${index}`).style.border = '5px solid red'
+                document.querySelector(`#tasksWrapper-${index}`).style.opacity = 0.65
+      
                 document.querySelector(`#task-${index}-countdown`).style.color = 'red'
 
                 const hoursPassed = ~~((secondsPassedInDay - allTasks[index].alertTimer) / 3600)
@@ -49,7 +50,8 @@ function handleTaskStatus(index) {
       
          element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
         element.textContent = `${h}:${m}:${s}`
-        document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid purple'
+        document.querySelector(`#tasksWrapper-${index}`).style.border = '5px solid goldenrod'
+       
         return `${h}:${m}:${s}`;       
     }
 
