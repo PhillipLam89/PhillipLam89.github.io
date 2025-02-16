@@ -103,6 +103,13 @@ function updateTime() {
 
      //update seconds passed for all tasks
       allTasks.forEach((t, i) => handleTaskStatus(i))
+
+      // updates if time passes to a new date
+      const currentDate = new Date()
+
+      const isItNewDay = currentDate.toLocaleString("en-US", {weekday: "long"}).trim() 
+                         !== currentDayNameHTML.textContent.trim()
+      isItNewDay && updateToNewDay()
 }
 function updateAlertTimers() {
     allTasks.forEach(task => {
@@ -116,18 +123,23 @@ function updateAlertTimers() {
 
     })
 }
-window.onload = function runOnBoot() { //loads current date
+function updateToNewDay() { // only called in updateTime when appropriate
     const date = new Date()        
-    currentDayNameHTML.textContent =`${date.toLocaleString("en-US", {weekday: "long"})}`
    
     const fullDate = {
         year: "numeric",
         month: "numeric",
         day: "numeric",
       };
+
+    currentDayNameHTML.textContent =
+        `${date.toLocaleString("en-US", {weekday: "long"})}`
     currentDateHTML.textContent = 
         `${date.toLocaleString('en-US', fullDate)}`
+}
+window.onload = function runOnBoot() { //loads current date
 
+    updateToNewDay()
     UpdateRenderTasks()
     updateBtn.onclick  = updateBtnHandler
     this.setInterval(updateTime, 999)
