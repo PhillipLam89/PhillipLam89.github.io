@@ -208,7 +208,7 @@ function updateTime() {
         } 
         if (task.alertTimer > secondsPassedInDay) {
             current.textContent = 'SCHEDULED'
-            current.style.color= 'gold'
+            current.style.color= 'deeppink'
         
             runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
         }
