@@ -109,6 +109,9 @@ function updateAlertTimers() {
         if (task.startHour == 12 && !task.isPM) {
             task.startHour  = 0
         }
+         if (task.startHour == 12 && task.isPM) {
+            task.alertTimer  = 0 + task.startMinutes * 60
+        
     })
 }
 window.onload = function runOnBoot() { //loads current date
