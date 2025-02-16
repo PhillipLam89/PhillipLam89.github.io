@@ -15,104 +15,15 @@ let allTasks = [
 allTasks = JSON.parse(localStorage.getItem('data'))
          || allTasks
 
-
-function handleTaskStatus(index) {
-    const task = allTasks[index]
-    
-    const current = document.querySelector(`#task-${index}-status`)
-    const countdownStatus = document.querySelector(`#task-${index}-countdown`)
-    if (secondsPassedInDay - task.alertTimer >= 3600) {
-        current.innerHTML = ''
-        current.innerHTML = `<p >PASSED</p><p> (More than <span id="task-${index}-hrsElapsed">1</span>)</p>`
-        current.style.color= 'red' 
-        countdownStatus.previousElementSibling.classList.add('hidden')
-        countdownStatus.textContent = 'PASSED'
-
-                document.querySelector(`#tasksWrapper-${index}`).style.opacity = 0.65
-      
-                document.querySelector(`#task-${index}-countdown`).style.color = 'red'
-
-                const hoursPassed = (secondsPassedInDay - allTasks[index].alertTimer) / 3600
-                const noSigFigs = String(hoursPassed.toFixed(1)) <= 1 ? true : false
-                
-                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
-                 + ` hr${noSigFigs  ? '' : 's'} ago`
-                 
-        return
-    }
-    function runTaskCountdown(totalSeconds, element,task) {
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60
-     
-        !hours && minutes <= 5 && 
-        !element.className.includes('blink-class') &&
-        element.classList.add('blink-class')
-
-        const h = hours.toString().padStart(2, '0');
-        const m = minutes.toString().padStart(2, '0');
-        const s = seconds.toString().padStart(2, '0');
-      
-         element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
-        element.textContent = `${h}:${m}:${s}`
-        return `${h}:${m}:${s}`;       
-    }
-
-    if (task.alertTimer < secondsPassedInDay) {
-        current.textContent = 'DO NOW'
-        
-        current.style.color= 'green'
-        countdownStatus.style.color=current.style.color
-        countdownStatus.textContent = 'IN PROGRESS'
-        countdownStatus.classList.remove('blink-class')
-        countdownStatus.previousElementSibling.classList.add('hidden')
-        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
-        document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
-    
-    } 
-     if (task.alertTimer > secondsPassedInDay) {
-        current.textContent = 'SCHEDULED'
-        current.style.color= 'gold'
-     
-        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
-    }
+const daysOfWeekSuffixes = {
+    MonFriSun: 'day',
+    Wed: 'nesday',
+    Tue: 'sday',
+    Thu: 'rsday',
+    Sat: 'urday'
 }
 
-function updateTime() {
-        const date = new Date()
-        let exactTime = date.toLocaleString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            
-      });
-      let [hrs,mins,secs] = exactTime.split(':')
-      let isPM = secs.slice(secs.indexOf(' ')+1) == 'PM' ? true : false
-            secs = secs.slice(0, secs.indexOf(' '))
-          
-          if (isPM) hrs = Number(hrs) + 12
-
-
-          if (!isPM && hrs == 12) hrs = 0
-      secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
-      
-      currentTimeHTML.textContent = `${exactTime}`
-
-     //update seconds passed for all tasks
-      allTasks.forEach((t, i) => handleTaskStatus(i))
-}
-function updateAlertTimers() {
-    allTasks.forEach(task => {
-        if (task.startHour == 12 && task.isPM) {
-            task.alertTimer = task.startHour * 3600 + task.startMinutes * 60
-            return
-        }         
-        task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
-        task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
-        task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
-
-    })
-}
+let lastTaskClickedOn = null
 window.onload = function runOnBoot() { //loads current date
 
     const date = new Date()
@@ -136,18 +47,6 @@ window.onload = function runOnBoot() { //loads current date
     updateBtn.onclick  = updateBtnHandler
     this.setInterval(updateTime, 999)
 }
-
-const daysOfWeekSuffixes = {
-    MonFriSun: 'day',
-    Wed: 'nesday',
-    Tue: 'sday',
-    Thu: 'rsday',
-    Sat: 'urday'
-}
-
-let lastTaskClickedOn = null
-
-
 function UpdateRenderTasks() {
     let format = ``
     allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
@@ -190,6 +89,110 @@ function UpdateRenderTasks() {
     localStorage.setItem('data', JSON.stringify(allTasks))
     // if (!allTasks.length) {bigDaddyWrapper.innerHTML = ''}
     if (allTasks.length === 1) {document.querySelector('.deleteBtn').disabled = true}
+}
+
+function updateTime() {
+        const date = new Date()
+        let exactTime = date.toLocaleString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            
+      });
+      let [hrs,mins,secs] = exactTime.split(':')
+      let isPM = secs.slice(secs.indexOf(' ')+1) == 'PM' ? true : false
+            secs = secs.slice(0, secs.indexOf(' '))
+          
+          if (isPM && hrs > 12) {
+            hrs = Number(hrs) + 12
+          }else hrs = 12
+
+
+          if (!isPM && hrs == 12) hrs = 0
+          
+      secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
+      
+      currentTimeHTML.textContent = `${exactTime}`
+
+     //update seconds passed for all tasks
+      allTasks.forEach((t, i) => handleTaskStatus(i))
+}
+function updateAlertTimers() {
+    allTasks.forEach(task => {
+        if (task.startHour == 12 && task.isPM) {
+            
+            task.alertTimer = task.startHour * 3600 + task.startMinutes * 60
+            return
+        }         
+        task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
+        task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
+        task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
+
+    })
+}
+function handleTaskStatus(index) {
+    const task = allTasks[index]
+    
+    const current = document.querySelector(`#task-${index}-status`)
+    const countdownStatus = document.querySelector(`#task-${index}-countdown`)
+    if (secondsPassedInDay - task.alertTimer >= 3600) {
+        current.innerHTML = ''
+        current.innerHTML = `<p >PASSED</p><p> (More than <span id="task-${index}-hrsElapsed">1</span>)</p>`
+        current.style.color= 'red' 
+        countdownStatus.previousElementSibling.classList.add('hidden')
+        countdownStatus.textContent = 'PASSED'
+
+                document.querySelector(`#tasksWrapper-${index}`).style.opacity = 0.65
+      
+                document.querySelector(`#task-${index}-countdown`).style.color = 'red'
+
+                const hoursPassed = (secondsPassedInDay - allTasks[index].alertTimer) / 3600
+                const noSigFigs = String(hoursPassed.toFixed(1)) <= 1 ? true : false
+                
+                document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid black'
+                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
+                 + ` hr${noSigFigs  ? '' : 's'} ago`
+                 
+        return
+    }
+    function runTaskCountdown(totalSeconds, element,task) {
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60
+     
+        !hours && minutes <= 5 && 
+        !element.className.includes('blink-class') &&
+        element.classList.add('blink-class')
+
+        const h = hours.toString().padStart(2, '0');
+        const m = minutes.toString().padStart(2, '0');
+        const s = seconds.toString().padStart(2, '0');
+      
+        element.style.color = (Math.abs(secondsPassedInDay  - task.alertTimer) >= 3600 ? 'green' : 'red' )
+        element.textContent = `${h}:${m}:${s}`
+        return `${h}:${m}:${s}`;       
+    }
+
+    if (task.alertTimer < secondsPassedInDay) {
+        current.textContent = 'DO NOW'
+
+        current.style.color= 'green'
+        countdownStatus.style.color = current.style.color
+        countdownStatus.previousElementSibling.textContent = 'Remaining:'
+        countdownStatus.textContent =  runTaskCountdown(secondsPassedInDay - task.alertTimer, countdownStatus,task)
+        countdownStatus.style.color = 'green'
+        countdownStatus.classList.remove('blink-class')
+        // countdownStatus.previousElementSibling.classList.add('hidden')
+        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
+        document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
+    
+    } 
+     if (task.alertTimer > secondsPassedInDay) {
+        current.textContent = 'SCHEDULED'
+        current.style.color= 'gold'
+     
+        runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
+    }
 }
 
 function updateBtnHandler() {
