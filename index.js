@@ -182,7 +182,7 @@ function UpdateRenderTasks() {
 
         bigDaddyWrapper.innerHTML = ''
         bigDaddyWrapper.innerHTML = format
-        addEditListeners()
+        addBtnListeners()
     })
     localStorage.setItem('data', JSON.stringify(allTasks))
     // if (!allTasks.length) {bigDaddyWrapper.innerHTML = ''}
@@ -230,29 +230,36 @@ function handleAMPM(id) {
     
 }
 
-function addEditListeners() {
-    const allDeleteBtns = this.document.querySelectorAll('.deleteBtn')
+function addBtnListeners() {
+    const addDeleteListeners = () => {
+        const allDeleteBtns = this.document.querySelectorAll('.deleteBtn')
 
-    allDeleteBtns.forEach(btn => btn.onclick = function(e) {
-         const deleteID = e.target.id.slice(e.target.id.indexOf('-')+1)
-      
-         allTasks = allTasks.filter(task => task.index != deleteID)             
-         UpdateRenderTasks()
-     
-    })  
+        allDeleteBtns.forEach(btn => btn.onclick = function(e) {
+             const deleteID = e.target.id.slice(e.target.id.indexOf('-')+1)
+          
+             allTasks = allTasks.filter(task => task.index != deleteID)             
+             UpdateRenderTasks()
+         
+        })  
+    }
+    addDeleteListeners()
+   
+    const addEditListeners = () => {
+        const allEditBtns = this.document.querySelectorAll('.editBtn')
+        allEditBtns.forEach(btn => btn.onclick = function(e) {
+            
+            let id = e.target.id
+                id = id.slice(id.indexOf('-')+1,)
+                lastTaskClickedOn = id
+                openModal()
+            
+            const entryHour = document.querySelector(`#startHour-${id}`).textContent
+            oldTaskTime.textContent = entryHour
+            currentGoalInput.value = allTasks[id]?.Goal
     
-    const allEditBtns = this.document.querySelectorAll('.editBtn')
-    allEditBtns.forEach(btn => btn.onclick = function(e) {
-        
-        let id = e.target.id
-            id = id.slice(id.indexOf('-')+1,)
-            lastTaskClickedOn = id
-            openModal()
-        
-        const entryHour = document.querySelector(`#startHour-${id}`).textContent
-        oldTaskTime.textContent = entryHour
-        currentGoalInput.value = allTasks[id]?.Goal
+        }) 
+    }
+    addEditListeners()
 
-    }) 
  
 }
