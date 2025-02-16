@@ -105,7 +105,8 @@ function updateTime() {
           
           if (isPM && hrs > 12) {
             hrs = Number(hrs) + 12
-          }else hrs = 12
+          }
+          if (hrs == 12 && isPM) hrs = 12
 
 
           if (!isPM && hrs == 12) hrs = 0
