@@ -138,3 +138,19 @@
   font-weight: bolder;
   font-size: 18;
 }
+.blink-class {
+  animation: blink 2s linear infinite;
+}
+
+@keyframes blink {
+  25% {
+    opacity: 0.5;
+
+  }
+  50% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0.5;
+  }
+}
