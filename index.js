@@ -105,8 +105,9 @@ function updateAlertTimers() {
         task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
         task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
         task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
-
-        if (task.startHour ==12) task.startHour = 0
+        if (task.startHour == 12 && task.isPM) {
+            task.startHour  = 0
+        }
     })
 }
 window.onload = function runOnBoot() { //loads current date
@@ -161,7 +162,7 @@ function UpdateRenderTasks() {
           <div>
            <span class="taskStatusHTML" id="task-${task.index}-status"></span>
             <h2>Time:</h2>
-             <p id="startHour-${task.index}">${task.startHour}:<span id="startMinutes-${task.index}">${task.startMinutes}</span><span id="AMPM"> ${task.isPM ? 'PM' : 'AM'}</span>
+             <p id="startHour-${task.index}">${task.startHour == 0 ? '12' : task.startHour}:<span id="startMinutes-${task.index}">${task.startMinutes}</span><span id="AMPM"> ${task.isPM ? 'PM' : 'AM'}</span>
             </p>
           </div>
           <div>
@@ -233,7 +234,7 @@ function handleAMPM(id) {
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
        
         task.startHour = task.startHour == 12 ? 12 : task.startHour - 12
-      
+        console.log('rwwsdsdsd')
     } else {
         task.isPM = false
         task.trueValue = (task.startHour * 60) + ~~task.startMinutes
