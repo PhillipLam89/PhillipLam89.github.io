@@ -116,9 +116,10 @@
     justify-content: space-between;
     padding: 3vw;
     min-height: 20dvh;
-    border: 3px solid purple;
+    border: 3px solid black;
     border-radius: 5px;
     margin: 1%;
+    box-shadow: inset 0 0 10px black;
 }
 .editBtn {
     position: absolute;
