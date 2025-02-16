@@ -103,7 +103,7 @@ function updateTime() {
 }
 function updateAlertTimers() {
     allTasks.forEach(task => {
-        task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
+        task.startHour = (task.isPM && task.startHour > 12) ? (~~task.startHour + 12) : task.startHour
         task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
         task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
         if (task.startHour == 12 && !task.isPM) {
