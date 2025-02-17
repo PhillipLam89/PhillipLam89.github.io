@@ -55,20 +55,19 @@ const infoModalHTML =
        <li>Task less than 1 hr away will have  <span style="color: red;">red countdown</span></li>
    </div>`
 
-const openModal = function (isInfoDisplayed = false) {
+const openModal = function (EVENT_CALLED = false) {
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
-  console.log(isInfoDisplayed)
-  if (isInfoDisplayed) {
-    modal.innerHTML = infoModalHTML
 
-  } else {
-    modal.innerHTML = defaultModalHTML
-    updateBtn.onclick  = updateBtnHandler
-  }
+  modal.innerHTML = EVENT_CALLED ? 
+        infoModalHTML : defaultModalHTML
+  window.updateBtn 
+        &&  
+  window.updateBtn.addEventListener("click", updateBtnHandler);
+
   const closeModalBtn = document.querySelector(".btn-close");
   closeModalBtn.addEventListener("click", closeModal);
-};
-infoBtn.onclick =  openModal
-// open modal event
+}
+infoBtn.onclick =  openModal //when onclicks call openModal, it auto passes in the Event, making Event_CALLED == true
+
 
