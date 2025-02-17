@@ -58,15 +58,16 @@ const infoModalHTML =
 const openModal = function (isInfoDisplayed = false) {
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
+  console.log(isInfoDisplayed)
   if (isInfoDisplayed) {
     modal.innerHTML = infoModalHTML
-    const closeModalBtn = document.querySelector(".btn-close");
-    closeModalBtn.addEventListener("click", closeModal);
+
   } else {
     modal.innerHTML = defaultModalHTML
     updateBtn.onclick  = updateBtnHandler
   }
-
+  const closeModalBtn = document.querySelector(".btn-close");
+  closeModalBtn.addEventListener("click", closeModal);
 };
 infoBtn.onclick =  openModal
 // open modal event
