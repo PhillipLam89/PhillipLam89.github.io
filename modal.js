@@ -47,9 +47,10 @@ const infoModalHTML =
 
   <div id="taskParentWrapper">
        <li>Tasks are scheduled for 1 hour</li>
-       <li>Tasks set < 1 hr will be "In Progress" </li>
+       <li>Tasks are ordered earliest to latest</li>
+       <li>Tasks set +/- 1 hr will be "In Progress" </li>
        <li>Cannot delete all tasks </li>
-       <li>Tasks in progress has remaining timers</li>
+       <li>All actions saved to local storage</li>
        <li>Tasks ~5 mins away will blink <span style="color: red;">red</span> </li>
        <li>Task more than 1 hr away will have <span style="color: green;">green countdown</span></li>
        <li>Task less than 1 hr away will have  <span style="color: red;">red countdown</span></li>
