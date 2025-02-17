@@ -1,24 +1,24 @@
-const modal = document.querySelector(".modal")
-const overlay = document.querySelector(".overlay")
-const openModalBtn = document.querySelector(".btn-open")
-const closeModalBtn = document.querySelector(".btn-close")
+const modal = document.querySelector(".modal");
+const overlay = document.querySelector(".overlay");
+const openModalBtn = document.querySelector(".btn-open");
+const closeModalBtn = document.querySelector(".btn-close");
 
 // close modal function
 const closeModal = function () {
-  modal.classList.add("hidden")
-  overlay.classList.add("hidden")
+  modal.classList.add("hidden");
+  overlay.classList.add("hidden");
 };
 
 // close the modal when the close button and overlay is clicked
-closeModalBtn.addEventListener("click", closeModal)
-overlay.addEventListener("click", closeModal)
+closeModalBtn.addEventListener("click", closeModal);
+overlay.addEventListener("click", closeModal);
 
 // close modal when the Esc key is pressed
-
-document.onkeydown = ({key}) => 
-  key == "Escape" && 
-  !modal.classList.contains("hidden") && 
-  closeModal()
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+    closeModal();
+  }
+});
 
 // open modal function
 const defaultModalHTML =  
@@ -47,28 +47,26 @@ const infoModalHTML =
 
   <div id="taskParentWrapper">
        <li>Tasks are scheduled for 1 hour</li>
-       <li>Tasks are ordered earliest to latest</li>
-       <li>Tasks set +/- 1 hr will be "In Progress" </li>
+       <li>Tasks set < 1 hr will be "In Progress" </li>
        <li>Cannot delete all tasks </li>
-       <li>All actions saved to local storage</li>
+       <li>Tasks in progress has remaining timers</li>
        <li>Tasks ~5 mins away will blink <span style="color: red;">red</span> </li>
        <li>Task more than 1 hr away will have <span style="color: green;">green countdown</span></li>
        <li>Task less than 1 hr away will have  <span style="color: red;">red countdown</span></li>
    </div>`
 
-const openModal = function (EVENT_CALLED = false) {
+const openModal = function (EventPassedIn = false) {
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
+  if (EventPassedIn) {
+    modal.innerHTML = infoModalHTML
 
-  modal.innerHTML = EVENT_CALLED ? 
-        infoModalHTML : defaultModalHTML
-  window.updateBtn 
-        &&  
-  window.updateBtn.addEventListener("click", updateBtnHandler);
-
+  } else {
+    modal.innerHTML = defaultModalHTML
+    updateBtn.onclick  = updateBtnHandler
+  }
   const closeModalBtn = document.querySelector(".btn-close");
   closeModalBtn.addEventListener("click", closeModal);
-}
-infoBtn.onclick =  openModal //when onclicks call openModal, it auto passes in the Event, making Event_CALLED == true
-
-
+};
+infoBtn.onclick =  openModal //onclick will auto pass in Event, makin EventPassedIn true
+// open modal event
