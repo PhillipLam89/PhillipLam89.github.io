@@ -103,7 +103,7 @@ function UpdateRenderTasks() {
 }
 
 function updateBtnHandler() {
-    if (!currentGoalInput.value.trim() || !timeInput.value) {
+    if (!currentGoalInput.value || !timeInput.value) {
         alert('fill out form')
         return
     }
