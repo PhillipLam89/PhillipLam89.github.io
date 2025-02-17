@@ -49,9 +49,10 @@ const infoModalHTML =
        <li>Tasks are scheduled for 1 hour</li>
        <li>Tasks set < 1 hr will be "In Progress" </li>
        <li>Cannot delete all tasks </li>
-       <li>Tasks ~5 mins away will blink</li>
-       <li>Task more than 1 hr away will be green</li>
-       <li>Task less than 1 hr away will be red</li>
+       <li>Tasks in progress has countdown timers</li>
+       <li>Tasks ~5 mins away will blink <span style="color: red;">red</span> </li>
+       <li>Task more than 1 hr away will have <span style="color: green;">green countdown</span></li>
+       <li>Task less than 1 hr away will have  <span style="color: red;">red countdown</span></li>
    </div>`
 
 const openModal = function (isInfoDisplayed = false) {
