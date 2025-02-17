@@ -152,9 +152,9 @@
 #infoBtn {
 
     font-size: 20px;
-    padding: 0.5%;
+    padding: 1.5%;
     font-weight: bolder;
-    color: black;
+    
 }
 .blink-class {
   animation: blink 2s linear infinite;
