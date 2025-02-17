@@ -1,7 +1,4 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-} 
+
 
 
 * {
@@ -151,6 +148,13 @@
   color: red;
   font-weight: bolder;
   font-size: 18;
+}
+#infoBtn {
+
+    font-size: 20px;
+    padding: 0.5%;
+    font-weight: bolder;
+    color: black;
 }
 .blink-class {
   animation: blink 2s linear infinite;
