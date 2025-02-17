@@ -21,9 +21,10 @@
   }
   #headers > button {
     outline: none;
-    background-color: gray;
-    height: 30px;
-    width: 30px;
+    background-color: white;
+    font-weight: bolder;
+    height: 40px;
+    width: 40px;
     border-radius: 50%;
   }
   .modal {
@@ -149,13 +150,7 @@
   font-weight: bolder;
   font-size: 18;
 }
-#infoBtn {
 
-    font-size: 20px;
-    padding: 1.5%;
-    font-weight: bolder;
-    
-}
 .blink-class {
   animation: blink 2s linear infinite;
 }
