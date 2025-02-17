@@ -13,7 +13,7 @@ const closeModal = function () {
 closeModalBtn.addEventListener("click", closeModal);
 overlay.addEventListener("click", closeModal);
 
-// close modal when the Esc key is pressed
+
 document.addEventListener("keydown", function (e) {
   if (e.key === "Escape" && !modal.classList.contains("hidden")) {
     closeModal();
@@ -58,13 +58,15 @@ const infoModalHTML =
 const openModal = function (EventPassedIn = false) {
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
-  if (EventPassedIn) {
-    modal.innerHTML = infoModalHTML
+  modal.innerHTML = EventPassedIn ? infoModalHTML : defaultModalHTML
+  if(window.updateBtn) updateBtn.onclick  = updateBtnHandler;
+  // if (EventPassedIn) {
+  //   modal.innerHTML = infoModalHTML
 
-  } else {
-    modal.innerHTML = defaultModalHTML
-    updateBtn.onclick  = updateBtnHandler
-  }
+  // } else {
+  //   modal.innerHTML = defaultModalHTML
+  //   updateBtn.onclick  = updateBtnHandler
+  // }
   const closeModalBtn = document.querySelector(".btn-close");
   closeModalBtn.addEventListener("click", closeModal);
 };
