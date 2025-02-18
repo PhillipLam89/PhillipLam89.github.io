@@ -73,9 +73,7 @@ function renderTasksHTML() {
                     id = id.slice(id.indexOf('-')+1,)
                     lastTaskClickedOn = id
                     openModal() //calling openModal w/ no arguments (to open proper modal box)
-                
-                // const entryHour = document.querySelector(`#startHour-${id}`).textContent
-                // oldTaskTime.textContent = entryHour
+
                 currentGoalInput.value = allTasks[id]?.Goal
         
             }) 
@@ -115,7 +113,7 @@ function updateSpecificTask(blankTaskObj,index,taskStartTime,taskEndTime) {
     blankTaskObj.startTimeAMPM = secondsToAmPm(blankTaskObj.startTimeSecs)
     blankTaskObj.endTimeAMPM = secondsToAmPm(blankTaskObj.endTimeSecs)
     blankTaskObj.Goal = currentGoalInput.value
-    blankTaskObj.taskDuration = blankTaskObj.endTimeSecs - blankTaskObj.startTimeSecs
+    blankTaskObj.taskDurationSecs = blankTaskObj.endTimeSecs - blankTaskObj.startTimeSecs
 
     id = !newPostOption.checked ? id : allTasks.length
     allTasks[index] = blankTaskObj
@@ -128,6 +126,7 @@ function updateTime() {
             second: "numeric",
             
       });
+
       let [hrs,mins,secs] = exactTime.split(':')
       let isPM = secs.slice(secs.indexOf(' ')+1) == 'PM' ? true : false
             secs = secs.slice(0, secs.indexOf(' '))
@@ -141,9 +140,9 @@ function updateTime() {
 
      //update seconds passed for all tasks
      
-     allTasks.forEach((t, i) => handleTaskStatus(i))
+     allTasks.forEach((t, i) => handleTaskStatusLIVE(i))
 
-     function handleTaskStatus (index) {
+     function handleTaskStatusLIVE (index) {
         const task = allTasks[index]
         
         const current = document.querySelector(`#task-${index}-status`)
