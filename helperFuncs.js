@@ -12,15 +12,7 @@ function updateToNewDay() { // only called in updateTime when appropriate
     currentDateHTML.textContent = 
         `${date.toLocaleString('en-US', fullDate)}`
 }
-function getCurrentSecondsInDay() {
-    const now = new Date()
-    const hours = now.getHours()
-    const minutes = now.getMinutes()
-    const seconds = now.getSeconds()
-  
-    const totalSeconds = (hours * 3600) + (minutes * 60) + seconds
-    return totalSeconds
-}
+
 function renderTasksHTML() {
     let format = ``
     allTasks = allTasks.sort((a,b) => a.startTimeSecs - b.startTimeSecs)
