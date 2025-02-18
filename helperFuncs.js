@@ -163,7 +163,7 @@ function updateTime() {
     
                     const hoursPassed = (secondsPassedInDay - task.endTimeSecs) / 3600
                     const noSigFigs = String(hoursPassed.toFixed(1)) == 1 ? true : false
-                    
+                    document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid black'
                     document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
                     + ` hr${noSigFigs  ? '' : 's'} ago`
                     
@@ -176,7 +176,7 @@ function updateTime() {
             
             current.style.color= 'green'
             countdownStatus.style.color=current.style.color
-            countdownStatus.innerHTML = `<h3>In Progress</h3>
+            countdownStatus.innerHTML = `<h5>Time Left</h5>
                                         <p>${runTaskCountdown(task.endTimeSecs - secondsPassedInDay, countdownStatus, task)}</p>`
             countdownStatus.style.color = 'green'
             countdownStatus.classList.remove('blink-class')
@@ -198,8 +198,6 @@ function updateTime() {
       const isItNewDay = currentDate.toLocaleString("en-US", {weekday: "long"}).trim() 
                          !== currentDayNameHTML.textContent.trim()
 
-
-                         
       isItNewDay && updateToNewDay()
 }
 function runTaskCountdown(totalSeconds, element,task) { // only called everytime updateTime is called to calculate time left until task starts/ends
