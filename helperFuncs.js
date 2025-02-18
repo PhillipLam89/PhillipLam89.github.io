@@ -115,7 +115,7 @@ function updateSpecificTask(blankTaskObj,index,taskStartTime,taskEndTime) {
     blankTaskObj.Goal = currentGoalInput.value
     blankTaskObj.taskDurationSecs = blankTaskObj.endTimeSecs - blankTaskObj.startTimeSecs
 
-    id = !newPostOption.checked ? id : allTasks.length
+    index = !newPostOption.checked ? index : allTasks.length
     allTasks[index] = blankTaskObj
 }
 function updateTime() {
@@ -142,54 +142,6 @@ function updateTime() {
      
      allTasks.forEach((t, i) => handleTaskStatusLIVE(i))
 
-     function handleTaskStatusLIVE (index) {
-        const task = allTasks[index]
-        
-        const current = document.querySelector(`#task-${index}-status`)
-        const countdownStatus = document.querySelector(`#task-${index}-countdown`)
-        
-        if (secondsPassedInDay >= task.endTimeSecs) {
-            current.innerHTML = ''
-            current.innerHTML = `<p>PASSED</p><p> ~<span id="task-${index}-hrsElapsed">1</span></p>`
-            current.style.color= 'red' 
-            countdownStatus.previousElementSibling.classList.add('hidden')
-            countdownStatus.textContent = 'PASSED'
-    
-                    document.querySelector(`#tasksWrapper-${index}`).style.opacity = 0.65
-        
-                    document.querySelector(`#task-${index}-countdown`).style.color = 'red'
-    
-                    const hoursPassed = (secondsPassedInDay - task.endTimeSecs) / 3600
-                    const noSigFigs = String(hoursPassed.toFixed(1)) == 1 ? true : false
-                    document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid black'
-                    document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
-                    + ` hr${noSigFigs  ? '' : 's'} ago`
-                    
-            return
-        }
-
-    
-        if (secondsPassedInDay >= task.startTimeSecs && secondsPassedInDay <= task.endTimeSecs) {
-            current.textContent = 'DO NOW'
-            
-            current.style.color= 'green'
-            countdownStatus.style.color=current.style.color
-            countdownStatus.innerHTML = `<h5>Time Left</h5>
-                                        <p>${runTaskCountdown(task.endTimeSecs - secondsPassedInDay, countdownStatus, task)}</p>`
-            countdownStatus.style.color = 'green'
-            countdownStatus.classList.remove('blink-class')
-            countdownStatus.previousElementSibling.classList.add('hidden')
-            document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
-            document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
-        
-        } 
-        else  {
-            current.textContent = 'SCHEDULED'
-            current.style.color= 'deeppink'
-            runTaskCountdown(task.startTimeSecs - secondsPassedInDay, countdownStatus,task)
-        }
-     }
-
       // updates if time passes to a new date
       const currentDate = new Date()
 
@@ -198,6 +150,53 @@ function updateTime() {
 
       isItNewDay && updateToNewDay()
 }
+function handleTaskStatusLIVE (index) {
+    const task = allTasks[index]
+    
+    const current = document.querySelector(`#task-${index}-status`)
+    const countdownStatus = document.querySelector(`#task-${index}-countdown`)
+    
+    if (secondsPassedInDay >= task.endTimeSecs) {
+        current.innerHTML = ''
+        current.innerHTML = `<p>PASSED</p><p> ~<span id="task-${index}-hrsElapsed">1</span></p>`
+        current.style.color= 'red' 
+        countdownStatus.previousElementSibling.classList.add('hidden')
+        countdownStatus.textContent = 'PASSED'
+
+                document.querySelector(`#tasksWrapper-${index}`).style.opacity = 0.65
+    
+                document.querySelector(`#task-${index}-countdown`).style.color = 'red'
+
+                const hoursPassed = (secondsPassedInDay - task.endTimeSecs) / 3600
+                const noSigFigs = String(hoursPassed.toFixed(1)) == 1 ? true : false
+                document.querySelector(`#tasksWrapper-${index}`).style.border = '3px solid black'
+                document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
+                + ` hr${noSigFigs  ? '' : 's'} ago`
+                
+        return
+    }
+
+
+    if (secondsPassedInDay >= task.startTimeSecs && secondsPassedInDay <= task.endTimeSecs) {
+        current.textContent = 'DO NOW'
+        
+        current.style.color= 'green'
+        countdownStatus.style.color=current.style.color
+        countdownStatus.innerHTML = `<h5>Time Left</h5>
+                                    <p>${runTaskCountdown(task.endTimeSecs - secondsPassedInDay, countdownStatus, task)}</p>`
+        countdownStatus.style.color = 'green'
+        countdownStatus.classList.remove('blink-class')
+        countdownStatus.previousElementSibling.classList.add('hidden')
+        document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
+        document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
+    
+    } 
+    else  {
+        current.textContent = 'SCHEDULED'
+        current.style.color= 'deeppink'
+        runTaskCountdown(task.startTimeSecs - secondsPassedInDay, countdownStatus,task)
+    }
+ }
 function runTaskCountdown(totalSeconds, element,task) { // only called everytime updateTime is called to calculate time left until task starts/ends
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
