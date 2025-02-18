@@ -12,22 +12,24 @@ function updateToNewDay() { // only called in updateTime when appropriate
     currentDateHTML.textContent = 
         `${date.toLocaleString('en-US', fullDate)}`
 }
-function UpdateRenderTasks() {
+
+function renderTasksHTML() {
     let format = ``
-    allTasks = allTasks.sort((a,b) => a.trueValue - b.trueValue)
+    allTasks = allTasks.sort((a,b) => a.startTimeSecs - b.startTimeSecs)
   
     allTasks.forEach((task,i)=> {
    
         task.index = i
-       
+
          format += `        
     <section id="tasksWrapper-${task.index}">
          <button class="deleteBtn" id="removeTask-${task.index}">X</button>
           <div>
            <span class="taskStatusHTML" id="task-${task.index}-status"></span>
-            <h2>Time:</h2>
-             <p id="startHour-${task.index}">${task.startHour == 0 ? '12' : task.startHour}:<span id="startMinutes-${task.index}">${task.startMinutes}</span><span id="AMPM"> ${task.isPM ? 'PM' : 'AM'}</span>
-            </p>
+          
+             <p id="task-${task.index}-startTimeAMPM">${task.startTimeAMPM}<br></p><p class="timeDash">to</p>
+             <p id="task-${task.index}-endTimeAMPM">${task.endTimeAMPM}</p>
+          
           </div>
           <div>
             <h2>Goal:</h2>
@@ -45,21 +47,6 @@ function UpdateRenderTasks() {
     </section>
     
 `          
-
-    updateAlertTimers()
-    function updateAlertTimers() {
-        allTasks.forEach(task => {
-            if (task.startHour == 12 && task.isPM) {
-                task.alertTimer = task.startHour * 3600 + task.startMinutes * 60
-                return
-            }         
-            task.startHour = task.isPM ? (~~task.startHour + 12) : task.startHour
-            task.alertTimer = (task.startHour * 3600) + task.startMinutes * 60
-            task.startHour = task.isPM ? (~~task.startHour - 12) : task.startHour
-
-        })
-    }
-
     bigDaddyWrapper.innerHTML = ''
     bigDaddyWrapper.innerHTML = format
 
@@ -72,7 +59,7 @@ function UpdateRenderTasks() {
                  const deleteID = e.target.id.slice(e.target.id.indexOf('-')+1)
               
                  allTasks = allTasks.filter(task => task.index != deleteID)             
-                 UpdateRenderTasks()
+                 renderTasksHTML()
              
             })  
         }
@@ -85,10 +72,10 @@ function UpdateRenderTasks() {
                 let id = e.target.id
                     id = id.slice(id.indexOf('-')+1,)
                     lastTaskClickedOn = id
-                    openModal()
+                    openModal() //calling openModal w/ no arguments (to open proper modal box)
                 
-                const entryHour = document.querySelector(`#startHour-${id}`).textContent
-                oldTaskTime.textContent = entryHour
+                // const entryHour = document.querySelector(`#startHour-${id}`).textContent
+                // oldTaskTime.textContent = entryHour
                 currentGoalInput.value = allTasks[id]?.Goal
         
             }) 
@@ -103,43 +90,35 @@ function UpdateRenderTasks() {
 }
 
 function updateBtnHandler() {
-    if (!currentGoalInput.value.trim() || !timeInput.value) {
-        alert('fill out form')
+    let taskStartTime = timeInputStart.value
+    let taskEndTime = timeInputEnd.value
+    if (!currentGoalInput.value.trim()) {
+        alert('goal cant be empty')
+        return
+    }
+    if (taskStartTime >= taskEndTime) {
+        alert('invalid hours')
         return
     }
 
-    let id = lastTaskClickedOn
-    let startHour = timeInput.value.slice(0, timeInput.value.indexOf(':'))
-    const startMinutes = timeInput.value.slice(timeInput.value.indexOf(':')+1)
-   
-    const newObj = {}
-    newObj.startHour = startHour
-    newObj.startMinutes = startMinutes
-    newObj.Goal = currentGoalInput.value
-    
-    id = !newPostOption.checked ? id : allTasks.length
 
+    let id = lastTaskClickedOn
+
+    const newObj = {}
+   
+    newObj.startTimeSecs = inputValueToSeconds(taskStartTime )
+    newObj.endTimeSecs = inputValueToSeconds(taskEndTime )
+
+    newObj.startTimeAMPM = secondsToAmPm(newObj.startTimeSecs)
+    newObj.endTimeAMPM = secondsToAmPm(newObj.endTimeSecs)
+    newObj.Goal = currentGoalInput.value
+    newObj.taskDuration = newObj.endTimeSecs - newObj.startTimeSecs
+
+    id = !newPostOption.checked ? id : allTasks.length
     allTasks[id] = newObj
    
-    function handleAMPM(id) {
-        const task = allTasks[id]
-    
-        if (task.startHour >= 12) {
-            task.isPM = true
-            task.trueValue = (task.startHour * 60) + ~~task.startMinutes
-           
-            task.startHour = task.startHour == 12 ? 12 : task.startHour - 12
-        } else {
-            task.isPM = false
-            task.trueValue = (task.startHour * 60) + ~~task.startMinutes
-      
-        }
-        
-    }
-
-    handleAMPM(id)
     closeModal()
-    UpdateRenderTasks()
+    renderTasksHTML()
    
 } 
 function updateTime() {
@@ -171,9 +150,9 @@ function updateTime() {
         const current = document.querySelector(`#task-${index}-status`)
         const countdownStatus = document.querySelector(`#task-${index}-countdown`)
         
-        if (secondsPassedInDay - task.alertTimer >= 3600) {
+        if (secondsPassedInDay >= task.endTimeSecs) {
             current.innerHTML = ''
-            current.innerHTML = `<p >PASSED</p><p> (More than <span id="task-${index}-hrsElapsed">1</span>)</p>`
+            current.innerHTML = `<p>PASSED</p><p> ~<span id="task-${index}-hrsElapsed">1</span></p>`
             current.style.color= 'red' 
             countdownStatus.previousElementSibling.classList.add('hidden')
             countdownStatus.textContent = 'PASSED'
@@ -182,8 +161,8 @@ function updateTime() {
         
                     document.querySelector(`#task-${index}-countdown`).style.color = 'red'
     
-                    const hoursPassed = (secondsPassedInDay - allTasks[index].alertTimer) / 3600
-                    const noSigFigs = String(hoursPassed.toFixed(1)) <= 1 ? true : false
+                    const hoursPassed = (secondsPassedInDay - task.endTimeSecs) / 3600
+                    const noSigFigs = String(hoursPassed.toFixed(1)) == 1 ? true : false
                     
                     document.querySelector(`#task-${index}-hrsElapsed`).textContent = hoursPassed.toFixed(noSigFigs ? 0 : 1)
                     + ` hr${noSigFigs  ? '' : 's'} ago`
@@ -192,13 +171,13 @@ function updateTime() {
         }
 
     
-        if (task.alertTimer < secondsPassedInDay) {
+        if (secondsPassedInDay >= task.startTimeSecs && secondsPassedInDay <= task.endTimeSecs) {
             current.textContent = 'DO NOW'
             
             current.style.color= 'green'
             countdownStatus.style.color=current.style.color
             countdownStatus.innerHTML = `<h3>In Progress</h3>
-                                        <p>${runTaskCountdown(task.alertTimer + 3600 - secondsPassedInDay, countdownStatus, task)}</p>`
+                                        <p>${runTaskCountdown(task.endTimeSecs - secondsPassedInDay, countdownStatus, task)}</p>`
             countdownStatus.style.color = 'green'
             countdownStatus.classList.remove('blink-class')
             countdownStatus.previousElementSibling.classList.add('hidden')
@@ -206,11 +185,10 @@ function updateTime() {
             document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
         
         } 
-        if (task.alertTimer > secondsPassedInDay) {
+        else  {
             current.textContent = 'SCHEDULED'
             current.style.color= 'deeppink'
-        
-            runTaskCountdown(task.alertTimer - secondsPassedInDay, countdownStatus,task)
+            runTaskCountdown(task.startTimeSecs - secondsPassedInDay, countdownStatus,task)
         }
      }
 
@@ -219,6 +197,9 @@ function updateTime() {
 
       const isItNewDay = currentDate.toLocaleString("en-US", {weekday: "long"}).trim() 
                          !== currentDayNameHTML.textContent.trim()
+
+
+                         
       isItNewDay && updateToNewDay()
 }
 function runTaskCountdown(totalSeconds, element,task) { // only called everytime updateTime is called to calculate time left until task starts/ends
@@ -238,3 +219,21 @@ function runTaskCountdown(totalSeconds, element,task) { // only called everytime
     element.textContent = `${h}:${m}:${s}`
     return `${h}:${m}:${s}`;       
 }
+function inputValueToSeconds(timeString) {
+
+    let [hrs, mins] = timeString.split(':')
+
+    return (hrs * 3600 + mins * 60) 
+   
+ }
+ function secondsToAmPm(totalSeconds) {
+     const totalMinutes = Math.floor(totalSeconds / 60);
+     const seconds = totalSeconds % 60;
+     const hours = Math.floor(totalMinutes / 60) % 24;
+     const minutes = totalMinutes % 60;
+     const ampm = hours >= 12 ? 'PM' : 'AM';
+     const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+   
+     const formattedTime = `${formattedHours}:${String(minutes).padStart(2, '0')} ${ampm}`;
+     return formattedTime
+ }
