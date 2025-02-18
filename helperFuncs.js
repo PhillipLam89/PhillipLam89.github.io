@@ -12,7 +12,15 @@ function updateToNewDay() { // only called in updateTime when appropriate
     currentDateHTML.textContent = 
         `${date.toLocaleString('en-US', fullDate)}`
 }
-
+function getCurrentSecondsInDay() {
+    const now = new Date()
+    const hours = now.getHours()
+    const minutes = now.getMinutes()
+    const seconds = now.getSeconds()
+  
+    const totalSeconds = (hours * 3600) + (minutes * 60) + seconds
+    return totalSeconds
+}
 function renderTasksHTML() {
     let format = ``
     allTasks = allTasks.sort((a,b) => a.startTimeSecs - b.startTimeSecs)
@@ -127,14 +135,8 @@ function updateTime() {
             
       });
 
-      let [hrs,mins,secs] = exactTime.split(':')
-      let isPM = secs.slice(secs.indexOf(' ')+1) == 'PM' ? true : false
-            secs = secs.slice(0, secs.indexOf(' '))
-          
-          if (isPM) hrs = Number(hrs) + 12
 
-          if (!isPM && hrs == 12) hrs = 0
-      secondsPassedInDay = (hrs * 3600) + (mins * 60) + (secs * 1)
+      secondsPassedInDay = getCurrentSecondsInDay()
       
       currentTimeHTML.textContent = `${exactTime}`
 
