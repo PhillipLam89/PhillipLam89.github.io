@@ -27,9 +27,11 @@ const defaultModalHTML =
         </div>
 
         <div id="taskParentWrapper">
-          <p>Current Time: <span id="oldTaskTime"></span></p>
-          <label for="timeInput">set new time</label>
-           <input id="timeInput" type="time">
+           <label for="timeInputStart">From</label>
+           <input id="timeInputStart" type="time">
+           <br>
+           <label for="timeInputEnd">To</label>     
+           <input id="timeInputEnd" type="time">
            <br>
            <label id="currentGoal">Goal:</label>
            <input id="currentGoalInput">
@@ -46,8 +48,7 @@ const infoModalHTML =
   </div>
 
   <div id="taskParentWrapper">
-       <li>Tasks are scheduled for 1 hour</li>
-       <li>Tasks set < 1 hr will be "In Progress" </li>
+       <li>Tasks cant be set more than 24 hrs apart</li>
        <li>Cannot delete all tasks </li>
        <li>Tasks in progress has remaining timers</li>
        <li>Tasks ~5 mins away will blink <span style="color: red;">red</span> </li>
