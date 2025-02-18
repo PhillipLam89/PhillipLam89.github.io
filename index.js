@@ -1,10 +1,19 @@
-let secondsPassedInDay = 0
+let secondsPassedInDay = getCurrentSecondsInDay()
+function getCurrentSecondsInDay() {
+    const now = new Date()
+    const hours = now.getHours()
+    const minutes = now.getMinutes()
+    const seconds = now.getSeconds()
+  
+    const totalSeconds = (hours * 3600) + (minutes * 60) + seconds
+    return totalSeconds
+}
 let lastTaskClickedOn = null
 let allTasks = [
     {startHour: '10', startMinutes: '36', Goal: 'Default Goal', Done:false, index:0,
                    isPM: true, trueValue: 22*60 + 36,
-                   startTimeAMPM: '14:30', endTimeAMPM: '17:31',
-                   startTimeSecs:0, endTimeSecs:0
+                   startTimeAMPM: '4:30 PM', endTimeAMPM: '7:30 PM',
+                   startTimeSecs:16*3600+30*60, endTimeSecs:19*3600+30*60
     }
 ]
 
@@ -18,4 +27,3 @@ window.onload = function runOnBoot() { //loads current date
 
             //see helperFuncs.js for other functions
 }
-
