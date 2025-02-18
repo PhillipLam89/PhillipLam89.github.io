@@ -100,27 +100,26 @@ function updateBtnHandler() {
         alert('invalid hours')
         return
     }
-
-
     let id = lastTaskClickedOn
 
     const newObj = {}
-   
-    newObj.startTimeSecs = inputValueToSeconds(taskStartTime )
-    newObj.endTimeSecs = inputValueToSeconds(taskEndTime )
-
-    newObj.startTimeAMPM = secondsToAmPm(newObj.startTimeSecs)
-    newObj.endTimeAMPM = secondsToAmPm(newObj.endTimeSecs)
-    newObj.Goal = currentGoalInput.value
-    newObj.taskDuration = newObj.endTimeSecs - newObj.startTimeSecs
-
-    id = !newPostOption.checked ? id : allTasks.length
-    allTasks[id] = newObj
-   
+    updateSpecificTask(newObj, id,taskStartTime,taskEndTime)
     closeModal()
     renderTasksHTML()
    
 } 
+function updateSpecificTask(blankTaskObj,index,taskStartTime,taskEndTime) {
+    blankTaskObj.startTimeSecs = inputValueToSeconds(taskStartTime )
+    blankTaskObj.endTimeSecs = inputValueToSeconds(taskEndTime )
+
+    blankTaskObj.startTimeAMPM = secondsToAmPm(blankTaskObj.startTimeSecs)
+    blankTaskObj.endTimeAMPM = secondsToAmPm(blankTaskObj.endTimeSecs)
+    blankTaskObj.Goal = currentGoalInput.value
+    blankTaskObj.taskDuration = blankTaskObj.endTimeSecs - blankTaskObj.startTimeSecs
+
+    id = !newPostOption.checked ? id : allTasks.length
+    allTasks[index] = blankTaskObj
+}
 function updateTime() {
         const date = new Date()
         let exactTime = date.toLocaleString([], {
