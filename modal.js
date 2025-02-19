@@ -61,13 +61,7 @@ const openModal = function (EventPassedIn = false) {
   overlay.classList.remove("hidden");
   modal.innerHTML = EventPassedIn ? infoModalHTML : defaultModalHTML
   if(window.updateBtn) updateBtn.onclick  = updateBtnHandler;
-  // if (EventPassedIn) {
-  //   modal.innerHTML = infoModalHTML
 
-  // } else {
-  //   modal.innerHTML = defaultModalHTML
-  //   updateBtn.onclick  = updateBtnHandler
-  // }
   const closeModalBtn = document.querySelector(".btn-close");
   closeModalBtn.addEventListener("click", closeModal);
 };
