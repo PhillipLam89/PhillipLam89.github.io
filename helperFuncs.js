@@ -234,8 +234,9 @@ function inputValueToSeconds(timeString) {
    
  }
 
-function handleClockPresetValues (str,i,goalDurationHours) {
+function renderGoalLengthHTML (str,i,goalDurationHours) {
     if (goalDurationHours == 1) {str = 'hr'}
+
     setTimeout(() => //This allow the html to be created first before we set text content
         document.querySelector(`#task-${i}-hrsOrMins`)
             .textContent = str, 69);
@@ -246,11 +247,11 @@ function handleClockPresetValues (str,i,goalDurationHours) {
 }
 
 
- function secondsToAmPm(totalSeconds, setClockValues = false, i) {
-     if (setClockValues) {
+ function secondsToAmPm(totalSeconds, setTaskLengthHTML = false, i) {
+     if (setTaskLengthHTML) {
         let goalDurationHours = (totalSeconds / 3600).toFixed(1) 
         goalDurationHours = goalDurationHours.includes('.0') ? Number((totalSeconds / 3600).toFixed(0)) : Number(goalDurationHours)
-        return handleClockPresetValues(goalDurationHours < 1 ? 'mins' : 'hrs',i,goalDurationHours)
+        return renderGoalLengthHTML(goalDurationHours < 1 ? 'mins' : 'hrs',i,goalDurationHours)
      }
      const totalMinutes = Math.floor(totalSeconds / 60);
      const hours = Math.floor(totalMinutes / 60) % 24;
