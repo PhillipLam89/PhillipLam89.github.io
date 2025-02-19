@@ -32,7 +32,7 @@ function renderTasksHTML() {
           
           </div>
           <div>
-            <h2>Goal (${secondsToAmPm(task.taskDurationSecs, true, task.index)} 
+            <h2>Goal (${secondsToAmPm(task.taskDurationSecs, 'CONVERT TO HRS', task.index)} 
                 <span id="task-${i}-hrsOrMins"  >hrs</span>
                 )
             
@@ -72,14 +72,12 @@ function renderTasksHTML() {
        
         const addEditListeners = () => {
 
-            function secondsToHHMMSS(totalSeconds) {
+            function secondsToHHMMSS_24HR(totalSeconds) {
                 const hours = Math.floor(totalSeconds / 3600);
                 const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = totalSeconds % 60;
               
                 const formattedHours = String(hours).padStart(2, '0');
                 const formattedMinutes = String(minutes).padStart(2, '0');
-                const formattedSeconds = String(seconds).padStart(2, '0');
               
                 return `${formattedHours}:${formattedMinutes}`;
               }
@@ -94,8 +92,8 @@ function renderTasksHTML() {
 
 
                 currentGoalInput.value = allTasks[id]?.Goal
-                timeInputStart.value = secondsToHHMMSS(allTasks[id].startTimeSecs)
-                timeInputEnd.value = secondsToHHMMSS(allTasks[id].endTimeSecs)
+                timeInputStart.value = secondsToHHMMSS_24HR(allTasks[id].startTimeSecs)
+                timeInputEnd.value = secondsToHHMMSS_24HR(allTasks[id].endTimeSecs)
             
             }) 
         }
@@ -236,22 +234,22 @@ function inputValueToSeconds(timeString) {
    
  }
 
+function handleClockPresetValues (str,i,goalDurationHours) {
+    setTimeout(() => 
+        document.querySelector(`#task-${i}-hrsOrMins`)
+            .textContent = str, 69);
+
+    const conversionFactor = str == 'mins' ? 60 : 1        
+    return goalDurationHours * conversionFactor
+                  
+}
 
 
-
- function secondsToAmPm(totalSeconds, toHours = false, i) {
-     if (toHours) {
+ function secondsToAmPm(totalSeconds, setClockValues = false, i) {
+     if (setClockValues) {
         let goalDurationHours = (totalSeconds / 3600).toFixed(1) 
         goalDurationHours = goalDurationHours.includes('.0') ? (totalSeconds / 3600).toFixed(0) : goalDurationHours
-
-        if (goalDurationHours < 1) {
-            setTimeout(() => 
-                document.querySelector(`#task-${i}-hrsOrMins`)
-                    .textContent = 'MINS',0)
-            return goalDurationHours * 60
-        }
-        
-        return goalDurationHours
+        return handleClockPresetValues(goalDurationHours < 1 ? 'mins' : 'hrs',i,goalDurationHours)
      }
      const totalMinutes = Math.floor(totalSeconds / 60);
      const hours = Math.floor(totalMinutes / 60) % 24;
