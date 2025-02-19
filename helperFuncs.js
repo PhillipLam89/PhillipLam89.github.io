@@ -18,7 +18,7 @@ function renderTasksHTML() {
     allTasks = allTasks.sort((a,b) => a.startTimeSecs - b.startTimeSecs)
   
     allTasks.forEach((task,i)=> {
-   
+        task.taskDurationSecs = task.endTimeSecs - task.startTimeSecs
         task.index = i
 
          format += `        
@@ -32,7 +32,12 @@ function renderTasksHTML() {
           
           </div>
           <div>
-            <h2>Goal:</h2>
+            <h2>Goal (${secondsToAmPm(task.taskDurationSecs, true, task.index)} 
+                <span id="task-${i}-hrsOrMins"  >hrs</span>
+                )
+            
+            </h2>
+           
             <p id="goalTextHTML-${task.index}">${task.Goal}</p>
          
           </div>
@@ -66,6 +71,19 @@ function renderTasksHTML() {
         addDeleteListeners()
        
         const addEditListeners = () => {
+
+            function secondsToHHMMSS(totalSeconds) {
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+              
+                const formattedHours = String(hours).padStart(2, '0');
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(seconds).padStart(2, '0');
+              
+                return `${formattedHours}:${formattedMinutes}`;
+              }
+
             const allEditBtns = this.document.querySelectorAll('.editBtn')
             allEditBtns.forEach(btn => btn.onclick = function(e) {
                 
@@ -74,8 +92,11 @@ function renderTasksHTML() {
                     lastTaskClickedOn = id
                     openModal() //calling openModal w/ no arguments (to open proper modal box)
 
+
                 currentGoalInput.value = allTasks[id]?.Goal
-        
+                timeInputStart.value = secondsToHHMMSS(allTasks[id].startTimeSecs)
+                timeInputEnd.value = secondsToHHMMSS(allTasks[id].endTimeSecs)
+            
             }) 
         }
         addEditListeners()
@@ -87,7 +108,9 @@ function renderTasksHTML() {
     if (allTasks.length === 1) {document.querySelector('.deleteBtn').disabled = true}
 }
 
-function updateBtnHandler() {
+function updateBtnHandler(e) {
+    
+
     let taskStartTime = timeInputStart.value
     let taskEndTime = timeInputEnd.value
     if (!currentGoalInput.value.trim()) {
@@ -113,7 +136,7 @@ function updateSpecificTask(blankTaskObj,index,taskStartTime,taskEndTime) {
     blankTaskObj.startTimeAMPM = secondsToAmPm(blankTaskObj.startTimeSecs)
     blankTaskObj.endTimeAMPM = secondsToAmPm(blankTaskObj.endTimeSecs)
     blankTaskObj.Goal = currentGoalInput.value
-    blankTaskObj.taskDurationSecs = blankTaskObj.endTimeSecs - blankTaskObj.startTimeSecs
+
 
     index = !newPostOption.checked ? index : allTasks.length
     allTasks[index] = blankTaskObj
@@ -127,14 +150,10 @@ function updateTime() {
             
       });
 
-
       secondsPassedInDay = getCurrentSecondsInDay()
-      
       currentTimeHTML.textContent = `${exactTime}`
 
      //update seconds passed for all tasks
-
-
      allTasks.forEach((t, i) => handleTaskStatusLIVE(i))
      function handleTaskStatusLIVE (index) {
         const task = allTasks[index]
@@ -175,7 +194,7 @@ function updateTime() {
             countdownStatus.previousElementSibling.classList.add('hidden')
             document.querySelector(`#tasksWrapper-${index}`).style.border = '10px ridge forestgreen'
             document.querySelector(`#tasksWrapper-${index}`).style.boxShadow = 'none'
-        
+            
         } 
         else  {
             current.textContent = 'SCHEDULED'
@@ -216,10 +235,27 @@ function inputValueToSeconds(timeString) {
     return (hrs * 3600 + mins * 60) 
    
  }
- function secondsToAmPm(totalSeconds) {
+
+
+
+
+ function secondsToAmPm(totalSeconds, toHours = false, i) {
+     if (toHours) {
+        let goalDurationHours = (totalSeconds / 3600).toFixed(1) 
+        goalDurationHours = goalDurationHours.includes('.0') ? (totalSeconds / 3600).toFixed(0) : goalDurationHours
+
+        if (goalDurationHours < 1) {
+            setTimeout(() => 
+                document.querySelector(`#task-${i}-hrsOrMins`)
+                    .textContent = 'MINS',0)
+            return goalDurationHours * 60
+        }
+        
+        return goalDurationHours
+     }
      const totalMinutes = Math.floor(totalSeconds / 60);
- 
      const hours = Math.floor(totalMinutes / 60) % 24;
+     
      const minutes = totalMinutes % 60;
      const ampm = hours >= 12 ? 'PM' : 'AM';
      const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
@@ -227,3 +263,5 @@ function inputValueToSeconds(timeString) {
      const formattedTime = `${formattedHours}:${String(minutes).padStart(2, '0')} ${ampm}`;
      return formattedTime
  }
+
+ 
