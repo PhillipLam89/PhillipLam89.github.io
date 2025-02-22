@@ -72,15 +72,7 @@ function renderTasksHTML() {
        
         const addEditListeners = () => {
 
-            function secondsToHHMMSS_24HR(totalSeconds) {
-                const hours = Math.floor(totalSeconds / 3600);
-                const minutes = Math.floor((totalSeconds % 3600) / 60);
-              
-                const formattedHours = String(hours).padStart(2, '0');
-                const formattedMinutes = String(minutes).padStart(2, '0');
-              
-                return `${formattedHours}:${formattedMinutes}`;
-              }
+
 
             const allEditBtns = this.document.querySelectorAll('.editBtn')
             allEditBtns.forEach(btn => btn.onclick = function(e) {
@@ -103,9 +95,20 @@ function renderTasksHTML() {
     })
     localStorage.setItem('data', JSON.stringify(allTasks))
     // if (!allTasks.length) {bigDaddyWrapper.innerHTML = ''}
+    
+    currentTasksHTML = bigDaddyWrapper.innerHTML
+    taskSwitcherHTML.style.bottom = '0'
     if (allTasks.length === 1) {document.querySelector('.deleteBtn').disabled = true}
 }
-
+function secondsToHHMMSS_24HR(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+  
+    const formattedHours = String(hours).padStart(2, '0');
+    const formattedMinutes = String(minutes).padStart(2, '0');
+  
+    return `${formattedHours}:${formattedMinutes}`;
+  }
 function updateBtnHandler(e) {
     
 
@@ -119,6 +122,7 @@ function updateBtnHandler(e) {
         alert('invalid hours')
         return
     }
+    taskSwitcherHTML.style.bottom = '0'
     let id = lastTaskClickedOn
 
     const newObj = {}
@@ -139,18 +143,20 @@ function updateSpecificTask(blankTaskObj,index,taskStartTime,taskEndTime) {
     index = !newPostOption.checked ? index : allTasks.length
     allTasks[index] = blankTaskObj
 }
+
+function displayHeaderExactTime() {
+    const date = new Date()
+    let exactTime = date.toLocaleString([], {
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",            
+  });
+
+  secondsPassedInDay = getCurrentSecondsInDay()
+  currentTimeHTML.textContent = `${exactTime}`
+}
 function updateTime() {
-        const date = new Date()
-        let exactTime = date.toLocaleString([], {
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            
-      });
-
-      secondsPassedInDay = getCurrentSecondsInDay()
-      currentTimeHTML.textContent = `${exactTime}`
-
+     displayHeaderExactTime()
      //update seconds passed for all tasks
      allTasks.forEach((t, i) => handleTaskStatusLIVE(i))
      function handleTaskStatusLIVE (index) {
