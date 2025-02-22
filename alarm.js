@@ -24,7 +24,9 @@ alarmTabHTML.onclick = function(e) {
 
     setAlarmBtn.onclick = (e) => openModal(e.target.id)
 
+
     
+
     intervals = clearInterval(intervals)
     intervals = setInterval(displayHeaderExactTime,999)
 
