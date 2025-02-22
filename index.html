@@ -8,8 +8,8 @@
     <title>Scheduler</title>
   </head>
   <body>
-     <section  id="headers">
-      <h1 >Hourly Schedule</h1>
+    <section id="tasksSectionBigWrapper">
+     <section id="headers">
       <h3 id="currentDayNameHTML"></h3>
       <h3 id="currentDateHTML"></h3>
       <h3 style="color: red;" id="currentTimeHTML">Loading...</h3>
@@ -21,7 +21,7 @@
 
         
       </section>
-
+      <section id="alarmSectionWrapper"></section>
       <section id="modalWrapper" class="modal hidden">
         <div class="flex">
          
@@ -47,9 +47,14 @@
       </section>
       
       <div class="overlay hidden"></div>
-
+  </section>
+  <section id="taskSwitcherHTML">
+    <div id="tasksTabHTML">Tasks</div>
+    <div id="alarmTabHTML">Alarm</div>
+  </section>
       <script src="./modal.js"></script>
       <script src="./index.js"></script>
+      <script src="./alarm.js"></script>
       <script src="./helperFuncs.js"></script>
   </body>
 </html>
