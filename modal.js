@@ -73,9 +73,12 @@ const setAlarmModal =
 
 let allAlarms = [];
 
-console.log(localStorage.getItem('alarms'))
+
 
 allAlarms = JSON.parse(localStorage.getItem('alarms')) || allAlarms
+
+
+
 function handleAlarmUpdateBtn(e) {
   let id = e.target.id
   if (!newAlarmTimer.value) {
@@ -110,6 +113,7 @@ function handleAlarmUpdateBtn(e) {
  
 
 
+
   closeModal()
   localStorage.setItem('alarms', JSON.stringify(allAlarms)) 
 
@@ -121,7 +125,10 @@ function renderAlarmsHTML() {
    format+= `
      <section id=alarm-${i}-wrapper>
       <h1>alarm: ${alarm.startTimeAMPM} ${alarm.isPM}</h1>
-      <input type="checkbox" id="alarm-${i}-toggle"></h3>
+      <label class="switch">
+        <input type="checkbox" id="alarm-${i}-input" checked=${alarm.isActive ? true: false}>
+        <span class="slider round"></span>
+      </label>
      </section>
    
    `
