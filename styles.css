@@ -10,7 +10,7 @@
     color: #222;
     min-height: 100dvh;
     position: relative;
-    background-color: bisque;
+    background-color: lightgreen;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -216,14 +216,14 @@ button:hover {
   height: 34px;
 }
 
-/* Hide default HTML checkbox */
+
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* The slider */
+
 .slider {
   position: absolute;
   cursor: pointer;
@@ -262,7 +262,7 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* Rounded sliders */
+
 .slider.round {
   border-radius: 34px;
 }
