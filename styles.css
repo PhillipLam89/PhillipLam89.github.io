@@ -126,7 +126,7 @@
     position: relative;
     justify-content: space-between;
     padding: 3vw;
-    
+    align-items: center;
     border: 3px solid black;
     border-radius: 5px;
     margin: 1%;
@@ -257,9 +257,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(100%);
+  -ms-transform: translateX(100%);
+  transform: translateX(100%);
 }
 
 
@@ -269,4 +269,16 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+.alarmsWrapper {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1.5em;
+  align-items: flex-end;
+}
+.alarmDeleteBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
 }

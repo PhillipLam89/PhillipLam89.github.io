@@ -79,64 +79,7 @@ allAlarms = JSON.parse(localStorage.getItem('alarms')) || allAlarms
 
 
 
-function handleAlarmUpdateBtn(e) {
-  let id = e.target.id
-  if (!newAlarmTimer.value) {
-    alert('invalid time')
-    return
-  }
-  let alertTimeForTmr = false
-  let timeInSeconds = inputValueToSeconds(newAlarmTimer.value)
-  let isPM = newAlarmTimer.value.slice(0,2) > 11 ? 'PM' : 'AM'
-
-  if (secondsPassedInDay > timeInSeconds) {
-    alertTimeForTmr = true
-    timeInSeconds = (86400 - (secondsPassedInDay - timeInSeconds))
-  } else {timeInSeconds = (timeInSeconds - secondsPassedInDay )}
-  
-  
-  let startTimeAPM = newAlarmTimer.value
-  let startingHour = startTimeAPM.slice(0,2)
-  let startingMins = startTimeAPM.slice(3)
-      startingHour = startingHour == 0 ? '12' : startingHour
-      startingHour = startingHour > 12 ? String(startingHour - 12) : startingHour
-      startingHour+=':'
-  const timeObj = {countdownTimeSecs: timeInSeconds,
-                   countdownTimeHrs: timeInSeconds / 3600,
-                  startTimeAMPM: startingHour + startingMins, 
-                  isForTmr: alertTimeForTmr, isPM:isPM , isActive: true,
-                  index: allAlarms.length
-                  };
-        
-  allAlarms.push(timeObj) 
-  bigDaddyWrapper.innerHTML = renderAlarmsHTML()
-  addAlarmToggleListeners()
-
-
-
-  closeModal()
-  localStorage.setItem('alarms', JSON.stringify(allAlarms)) 
-
-}
-
-function renderAlarmsHTML() {
-  let format = ''
-  bigDaddyWrapper.innerHTML = ''
-  allAlarms.forEach((alarm,i) => {
-   format+= `
-     <section id=alarm-${i}-wrapper>
-      <h1>alarm: ${alarm.startTimeAMPM} ${alarm.isPM}</h1>
-      <label class="switch" id="alarmLabel-${i}">
-        <input type="checkbox" id="alarmInput-${i}" ${alarm.isActive ? 'checked' : ''}>
-        <span class="slider round" id="alarmSpan-${i}"></span>
-      </label>
-     </section>
-   
-   `
-  })
-
-  return format
-} 
+ 
 const openModal = function (EventPassedIn = false) {
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
