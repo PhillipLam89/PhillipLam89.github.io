@@ -71,7 +71,7 @@ const setAlarmModal =
    </div>`
 
 
-let allAlarms = [];
+var allAlarms = [];
 
 
 
@@ -109,8 +109,8 @@ function handleAlarmUpdateBtn(e) {
                   };
         
   allAlarms.push(timeObj) 
-  bigDaddyWrapper.insertAdjacentHTML('afterbegin', renderAlarmsHTML())
- 
+  bigDaddyWrapper.innerHTML = renderAlarmsHTML()
+  addAlarmToggleListeners()
 
 
 
@@ -118,6 +118,7 @@ function handleAlarmUpdateBtn(e) {
   localStorage.setItem('alarms', JSON.stringify(allAlarms)) 
 
 }
+
 function renderAlarmsHTML() {
   let format = ''
   bigDaddyWrapper.innerHTML = ''
@@ -125,9 +126,9 @@ function renderAlarmsHTML() {
    format+= `
      <section id=alarm-${i}-wrapper>
       <h1>alarm: ${alarm.startTimeAMPM} ${alarm.isPM}</h1>
-      <label class="switch">
-        <input type="checkbox" id="alarm-${i}-input" checked=${alarm.isActive ? true: false}>
-        <span class="slider round"></span>
+      <label class="switch" id="alarmLabel-${i}">
+        <input type="checkbox" id="alarmInput-${i}" ${alarm.isActive ? 'checked' : ''}>
+        <span class="slider round" id="alarmSpan-${i}"></span>
       </label>
      </section>
    
@@ -153,6 +154,6 @@ const openModal = function (EventPassedIn = false) {
 
   const closeModalBtn = document.querySelector(".btn-close");
   closeModalBtn.addEventListener("click", closeModal);
-};
+}
 infoBtn.onclick =  openModal //onclick will auto pass in Event, makin EventPassedIn true
 // open modal event
