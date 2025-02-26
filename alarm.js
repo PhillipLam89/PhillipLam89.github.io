@@ -10,26 +10,32 @@ let alarmPageHTML =
  </div>
 `
 
-// function handleNewAlarms(e) {
-//     openModal(e.target.id)
+function addAlarmToggleListeners() {
+  const allAlarmSections = document.querySelectorAll('.switch')
+  allAlarmSections.forEach((alarm) => {
+    alarm.onclick = function(e) {
+      if (e.target.tagName !== 'SPAN') return;
+      const id = e.target.id.slice(e.target.id.indexOf('-')+1)
+      allAlarms[id].isActive = !allAlarms[id].isActive
+      localStorage.setItem('alarms', JSON.stringify(allAlarms)) 
+      
+    }
+})
+}
 
-// }
 
 alarmTabHTML.onclick = function(e) {
+  if (currentPageDisplayed !== 'alarm') {
+    currentPageDisplayed = 'alarm'
     savedCurrentTasksHTML = bigDaddyWrapper.innerHTML
     
     bigDaddyWrapper.innerHTML = renderAlarmsHTML()
     alarmSectionWrapper.innerHTML = alarmPageHTML
-    currentPageDisplayed = 'alarm'
-
+    addAlarmToggleListeners()
+  }
     setAlarmBtn.onclick = (e) => openModal(e.target.id)
-
-
-    
-
     intervals = clearInterval(intervals)
-    intervals = setInterval(displayHeaderExactTime,999)
-
+    intervals = setInterval(displayHeaderExactTime,1000)
 }
 
 tasksTabHTML.onclick = function(e) {
@@ -38,5 +44,5 @@ tasksTabHTML.onclick = function(e) {
     currentPageDisplayed = 'tasks'
     renderTasksHTML()
     intervals = clearInterval(intervals)
-    intervals = setInterval(updateTime, 999)
+    intervals = setInterval(updateTime, 1000)
 }
