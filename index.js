@@ -16,6 +16,7 @@ let allTasks = [
                    startTimeSecs:16*3600+30*60, endTimeSecs:19*3600+30*60
     }
 ]
+// localStorage.clear()
 let currentPageDisplayed = 'tasks'
 let savedCurrentTasksHTML = null
 let savedCurrentAlarmsHTML = null
